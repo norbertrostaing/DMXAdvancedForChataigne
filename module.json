@@ -105,7 +105,7 @@
 		"RGB 8b":
 		{
 			"menu": "",
-			"callback": "setChannel8bit",
+			"callback": "setChannelRGB8bit",
 			"parameters": { 
 				"Channel": {
 					"type": "Integer",
@@ -130,8 +130,7 @@
 					"useForMapping": true
 				}, 
 				"Value": {
-					"type": "Color",
-					"useForMapping": true
+					"type": "Color"
 				}
 			}
 		},
@@ -140,7 +139,7 @@
 		"RGB 16b":
 		{
 			"menu": "",
-			"callback": "setChannel8bit",
+			"callback": "setChannelRGB16bit",
 			"parameters": { 
 				"Channel": {
 					"type": "Integer",
