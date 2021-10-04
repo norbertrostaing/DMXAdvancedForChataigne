@@ -5,8 +5,8 @@
 	
 	"version": "0.1",
 	"description": "Tools to use HTP, LTP and relativ effects in chataigne",
-	"url":"https://github.com/norbertrostaing/UIforChataigne",
-	"downloadURL": "https://github.com/norbertrostaing/UIforChataigne/archive/refs/heads/main.zip",
+	"url":"https://github.com/norbertrostaing/DMXAdvancedForChataigne",
+	"downloadURL": "https://github.com/norbertrostaing/DMXAdvancedForChataigne/archive/refs/heads/main.zip",
 	
 	"hasInput": false,
 	"hasOutput": true, 
