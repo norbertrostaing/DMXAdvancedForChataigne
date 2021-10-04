@@ -1,0 +1,230 @@
+{
+	"name": "DMX Advanced",
+	"type": "DMX",
+	"path": "Protocol",
+	
+	"version": "0.1",
+	"description": "Tools to use HTP, LTP and relativ effects in chataigne",
+	"url":"https://github.com/norbertrostaing/UIforChataigne",
+	"downloadURL": "https://github.com/norbertrostaing/UIforChataigne/archive/refs/heads/main.zip",
+	
+	"hasInput": false,
+	"hasOutput": true, 
+
+	"hideDefaultCommands": true,
+	"hideDefaultParameters": [
+	],
+	
+	"defaults": {
+	},
+	
+	"parameters": {
+	},
+	
+	"scripts": [
+		"DMXAdvanced.js"
+	],
+	
+	"values": {
+	},
+	
+	"commands": {
+		
+		"Dimmer 8bits":
+		{
+			"menu": "",
+			"callback": "setChannel8bit",
+			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+						"Master" : "Master"
+					}
+				}, 
+				"Slot Number": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"useForMapping": true
+				}, 
+				"Value": {
+					"type": "Float",
+					"default": 0, 
+					"useForMapping": true
+				}
+			}
+		},
+
+	
+		"Dimmer 16bits":
+		{
+			"menu": "",
+			"callback": "setChannel16bit",
+			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+						"Master" : "Master"
+					}
+				}, 
+				"Slot Number": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"useForMapping": true
+				}, 
+				"Value": {
+					"type": "Float",
+					"default": 0, 
+					"useForMapping": true
+				}
+			}
+		},
+
+	
+		"RGB 8b":
+		{
+			"menu": "",
+			"callback": "setChannel8bit",
+			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+						"Master" : "Master"
+					}
+				}, 
+				"Slot Number": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"useForMapping": true
+				}, 
+				"Value": {
+					"type": "Color",
+					"useForMapping": true
+				}
+			}
+		},
+
+	
+		"RGB 16b":
+		{
+			"menu": "",
+			"callback": "setChannel8bit",
+			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+						"Master" : "Master"
+					}
+				}, 
+				"Slot Number": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"useForMapping": true
+				}, 
+				"Value": {
+					"type": "Color",
+					"useForMapping": true
+				}
+			}
+		},
+
+	
+		"Clear slot":
+		{
+			"menu": "",
+			"callback": "clearSlot",
+			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+					}
+				}, 
+				"Slot Number": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"useForMapping": true
+				}
+			}
+		},
+
+		"Clear Channel":
+		{
+			"menu": "",
+			"callback": "clearChannel",
+			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+						"All" : "All"
+					}
+				} 
+			}
+		},
+
+	
+	}
+}
