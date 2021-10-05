@@ -119,6 +119,46 @@
 	
 
 
+		"Set Slot Level":
+		{
+			"menu": "",
+			"callback": "setSlotLevel",
+			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+						"Master" : "Master"
+					}
+				}, 
+
+				"Slot Number": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"useForMapping": true
+				}, 
+				"Value": { 
+					"type":"Float", 
+					"default": 0, 
+					"useForMapping": true
+				}
+			}
+		},
+
+	
+
+
 		"Dimmer 8bits":
 		{
 			"menu": "",

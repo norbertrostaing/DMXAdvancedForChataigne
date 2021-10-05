@@ -6,8 +6,8 @@
       "parameters": [
         {
           "value": [
-            -202.0,
-            212.0
+            -631.0,
+            176.0
           ],
           "controlAddress": "/viewUIPosition"
         },
@@ -23,7 +23,7 @@
           "controlAddress": "/active"
         }
       ],
-      "niceName": "DMX Advanced",
+      "niceName": "State",
       "type": "State",
       "processors": {
         "items": [
@@ -34,18 +34,13 @@
                 "controlAddress": "/enabled"
               },
               {
-                "value": 84.0,
+                "value": 24.0,
                 "controlAddress": "/listSize"
               },
               {
-                "value": 1,
+                "value": 5,
                 "hexMode": false,
                 "controlAddress": "/count"
-              },
-              {
-                "value": 1,
-                "hexMode": false,
-                "controlAddress": "/previewIndex"
               }
             ],
             "niceName": "Patch",
@@ -54,14 +49,63 @@
               "lists": {
                 "items": [
                   {
+                    "parameters": [
+                      {
+                        "value": "/customVariables/projos/variables/lumistyle/lumistyle",
+                        "controlAddress": "/#1"
+                      },
+                      {
+                        "value": "/customVariables/projos/variables/lampe1/lampe1",
+                        "controlAddress": "/#2"
+                      },
+                      {
+                        "value": "/customVariables/projos/variables/lampe2/lampe2",
+                        "controlAddress": "/#3"
+                      },
+                      {
+                        "value": "/customVariables/projos/variables/pcFloppy/pcFloppy",
+                        "controlAddress": "/#4"
+                      },
+                      {
+                        "value": "/customVariables/projos/variables/pcMarie/pcMarie",
+                        "controlAddress": "/#5"
+                      }
+                    ],
                     "niceName": "CV",
                     "type": "Input Values",
-                    "listSize": 1
+                    "listSize": 5
                   },
                   {
+                    "parameters": [
+                      {
+                        "value": 8,
+                        "hexMode": false,
+                        "controlAddress": "/#1"
+                      },
+                      {
+                        "value": 7,
+                        "hexMode": false,
+                        "controlAddress": "/#2"
+                      },
+                      {
+                        "value": 9,
+                        "hexMode": false,
+                        "controlAddress": "/#3"
+                      },
+                      {
+                        "value": 4,
+                        "hexMode": false,
+                        "controlAddress": "/#4"
+                      },
+                      {
+                        "value": 5,
+                        "hexMode": false,
+                        "controlAddress": "/#5"
+                      }
+                    ],
                     "niceName": "DMX",
                     "type": "Integer",
-                    "listSize": 1
+                    "listSize": 5
                   }
                 ],
                 "viewOffset": [
@@ -74,7 +118,7 @@
                 "hideInEditor": true,
                 "items": [
                   {
-                    "niceName": "Custom Variable to DMX",
+                    "niceName": "Mapping",
                     "editorIsCollapsed": true,
                     "type": "Mapping",
                     "im": {
@@ -178,7 +222,7 @@
                 "controlAddress": "/enabled"
               },
               {
-                "value": 24.0,
+                "value": 110.0,
                 "controlAddress": "/listSize"
               },
               {
@@ -220,7 +264,7 @@
                         "controlAddress": "/#5"
                       }
                     ],
-                    "niceName": "Channels",
+                    "niceName": "Channel",
                     "type": "Integer",
                     "listSize": 5
                   }
@@ -235,7 +279,7 @@
                 "hideInEditor": true,
                 "items": [
                   {
-                    "niceName": "Mapping value",
+                    "niceName": "Mapping",
                     "editorIsCollapsed": true,
                     "type": "Mapping",
                     "im": {
@@ -306,7 +350,7 @@
                             "paramLinks": {
                               "channel": {
                                 "linkType": 2,
-                                "list": "channels"
+                                "list": "channel"
                               },
                               "elementPosition": {
                                 "linkType": 4
@@ -323,7 +367,7 @@
                     }
                   },
                   {
-                    "niceName": "Mapping level",
+                    "niceName": "Mapping 1",
                     "editorIsCollapsed": true,
                     "type": "Mapping",
                     "im": {
@@ -369,115 +413,28 @@
                           "type": "BaseItem",
                           "commandModule": "dmxAdvanced",
                           "commandPath": "",
-                          "commandType": "Script callback",
+                          "commandType": "Set Slot Level",
                           "command": {
                             "parameters": [
                               {
-                                "value": "setSlotLevel",
-                                "controlAddress": "/callback"
+                                "value": "FX",
+                                "controlAddress": "/mode"
+                              },
+                              {
+                                "value": 2,
+                                "hexMode": false,
+                                "controlAddress": "/slotNumber"
                               }
                             ],
                             "paramLinks": {
-                            },
-                            "customValues": {
-                              "items": [
-                                {
-                                  "parameters": [
-                                    {
-                                      "value": 4,
-                                      "hexMode": false,
-                                      "controlAddress": "/#1"
-                                    }
-                                  ],
-                                  "niceName": "#1",
-                                  "type": "Integer",
-                                  "param": {
-                                    "value": 4,
-                                    "hexMode": false,
-                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#1/#1"
-                                  },
-                                  "paramLink": {
-                                    "linkType": 2,
-                                    "list": "channels"
-                                  }
-                                },
-                                {
-                                  "parameters": [
-                                    {
-                                      "value": "i8",
-                                      "controlAddress": "/#2"
-                                    }
-                                  ],
-                                  "niceName": "#2",
-                                  "type": "String",
-                                  "param": {
-                                    "value": "i8",
-                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#2/#2"
-                                  },
-                                  "paramLink": {
-                                    "linkType": 0
-                                  }
-                                },
-                                {
-                                  "parameters": [
-                                    {
-                                      "value": "FX",
-                                      "controlAddress": "/#3"
-                                    }
-                                  ],
-                                  "niceName": "#3",
-                                  "type": "String",
-                                  "param": {
-                                    "value": "FX",
-                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#3/#3"
-                                  },
-                                  "paramLink": {
-                                    "linkType": 0
-                                  }
-                                },
-                                {
-                                  "parameters": [
-                                    {
-                                      "value": 2,
-                                      "hexMode": false,
-                                      "controlAddress": "/#4"
-                                    }
-                                  ],
-                                  "niceName": "#4",
-                                  "type": "Integer",
-                                  "param": {
-                                    "value": 2,
-                                    "hexMode": false,
-                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#4/#4"
-                                  },
-                                  "paramLink": {
-                                    "linkType": 0
-                                  }
-                                },
-                                {
-                                  "parameters": [
-                                    {
-                                      "value": 0.9650455713272095,
-                                      "controlAddress": "/#5"
-                                    }
-                                  ],
-                                  "niceName": "#5",
-                                  "type": "Float",
-                                  "param": {
-                                    "value": 0.9650455713272095,
-                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#5/#5"
-                                  },
-                                  "paramLink": {
-                                    "linkType": 1,
-                                    "mappingValueIndex": 0
-                                  }
-                                }
-                              ],
-                              "viewOffset": [
-                                0,
-                                0
-                              ],
-                              "viewZoom": 1.0
+                              "channel": {
+                                "linkType": 2,
+                                "list": "channel"
+                              },
+                              "value": {
+                                "linkType": 1,
+                                "mappingValueIndex": 0
+                              }
                             }
                           }
                         }

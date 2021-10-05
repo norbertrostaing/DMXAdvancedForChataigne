@@ -19,13 +19,13 @@ function setValueSimple(chanNumber, dataType, mode, slotNumber, value) {
 	else if (dataType == "rgb16") {setValue(chanNumber,dataType, mode, slotNumber, false, false, false, value); }
 }
 
-function setSlotLevel(chanNumber, dataType, mode, slotNumber, value) {
+function setSlotLevel(chanNumber, mode, slotNumber, value) {
 	if (slotsData[chanNumber-1][mode] && slotsData[chanNumber-1][mode][""+slotNumber]) {
 		slotsData[chanNumber-1][mode][""+slotNumber].level = value;
-		if (dataType == "i8") {processChannelI8(chanNumber); }
-		else if (dataType == "i16") {processChannelI16(chanNumber); }
-		else if (dataType == "rgb8") {processChannelRGB8bit(chanNumber); }
-		else if (dataType == "rgb16") {processChannelRGB16bit(chanNumber); }
+		if (slotsData[chanNumber-1].dataType == "i8") {processChannelI8(chanNumber); }
+		else if (slotsData[chanNumber-1].dataType == "i16") {processChannelI16(chanNumber); }
+		else if (slotsData[chanNumber-1].dataType == "rgb8") {processChannelRGB8bit(chanNumber); }
+		else if (slotsData[chanNumber-1].dataType == "rgb16") {processChannelRGB16bit(chanNumber); }
 	}
 }
 
