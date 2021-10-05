@@ -28,7 +28,13 @@ A "Clear all slots" button is present on script part to clear all slots.
 
 ## Patch helper
 To help you patch dmx channels, the simplest way is to create a multiplex with an **input list of custom variables** representing your channel desired values and a **custom list of integer** representing your DMX adresses.
-once this done, you can use the patch helper fields in the script section to auto fill your custom variable list with all variables of a custom variable group
+In this multiplex, you can add a mapping with your multiplex custom variable list for input and a dimmer or color function wwith parameters : 
+- Channel : your DMX adresses list
+- Mode : you desired mode for these channels
+- Slot number : in wich slot you wanna write these values
+- Value : your custom variables list
+Once this done, you can use the patch helper fields in the script section to auto fill your custom variable list with all variables of a custom variable group
+
 
 
 ## Effects
