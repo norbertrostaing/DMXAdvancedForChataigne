@@ -13,6 +13,13 @@ var dmxSlot = function() {
 };
 
 
+function setValue(chanNumber, dataType, mode, slotNumber, valuei8, valuei16, valuergb8, valuergb16) {
+	if (dataType == "i8") {setChannel8bit(chanNumber, mode, slotNumber, valuei8); }
+	else if (dataType == "i16") {setChannel16bit(chanNumber, mode, slotNumber, valuei16); }
+	else if (dataType == "rgb8") {setChannelRGB8bit(chanNumber, mode, slotNumber, valuergb8); }
+	else if (dataType == "rgb16") {setChannelRGB16bit(chanNumber, mode, slotNumber, valuergb16); }
+}
+
 function setChannel8bit(chanNumber, mode, slotNumber, value) {
 	updateSlot(chanNumber, mode, slotNumber, value, "i8");
 	processChannelI8(chanNumber);
@@ -360,6 +367,7 @@ function effect(targetValue, targetCV, num, total) {
 }
 
 function controlAdressToElement(a) {
+	if (!a) {return false;}
 	a = a.split("/");
 	a.splice(0,1);
 	target = root;

@@ -30,6 +30,95 @@
 	
 	"commands": {
 		
+		"Set Value":
+		{
+			"menu": "",
+			"callback": "setValue",
+			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+
+
+				"Data type": { 
+					"type":"Enum", 
+					"options": { 
+						"Dimmer 8bits":"i8", 
+						"Dimmer 16bits":"i16",
+						"RGB color 8bits":"rgb8", 
+						"RGB color 16bits":"rgb16" 
+					} 
+				},
+
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+						"Master" : "Master"
+					}
+				}, 
+				"Slot Number": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"useForMapping": true
+				}, 
+				"Value (dimmer 8)": { 
+					"type":"Float", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"i8", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (dimmer 16)": { 
+					"type":"Float", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"i16", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (RGB 8)": { 
+					"type":"Color", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"rgb8", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (RGB 16)": { 
+					"type":"Color", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"rgb16", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+			}
+		},
+
+	
+
+
 		"Dimmer 8bits":
 		{
 			"menu": "",
