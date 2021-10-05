@@ -318,6 +318,60 @@
 			"menu": "",
 			"callback": "effect",
 			"parameters": { 
+				"Channel": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"max":512,
+					"useForMapping": true
+				}, 
+
+
+				"Data type": { 
+					"type":"Enum", 
+					"options": { 
+						"Dimmer 8bits":"i8", 
+						"Dimmer 16bits":"i16",
+						"RGB color 8bits":"rgb8", 
+						"RGB color 16bits":"rgb16" 
+					} 
+				},
+
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX",
+						"Master" : "Master"
+					}
+				}, 
+				"Slot Number": {
+					"type": "Integer",
+					"default": 1, 
+					"min":1,
+					"useForMapping": true
+				}, 
+				"Sequence Value": {
+					"type": "Target",
+				}, 
+				"Element position": {
+					"type": "Integer",
+					"min":1,
+				}, 
+				"Elements total": {
+					"type": "Integer",
+					"min":1,
+				}, 
+			}
+		},
+
+	
+		"Effect To Custom Variable":
+		{
+			"menu": "",
+			"callback": "effectCV",
+			"parameters": { 
 				"Sequence Value": {
 					"type": "Target",
 				}, 

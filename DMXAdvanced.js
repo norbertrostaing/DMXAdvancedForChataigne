@@ -12,6 +12,12 @@ var dmxSlot = function() {
 	this.level = 1;
 };
 
+function setValueSimple(chanNumber, dataType, mode, slotNumber, value) {
+	if (dataType == "i8") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
+	else if (dataType == "i16") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
+	else if (dataType == "rgb8") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
+	else if (dataType == "rgb16") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
+}
 
 function setValue(chanNumber, dataType, mode, slotNumber, valuei8, valuei16, valuergb8, valuergb16) {
 	if (dataType == "i8") {setChannel8bit(chanNumber, mode, slotNumber, valuei8); }
@@ -322,32 +328,26 @@ function getInputListElements(element) {
 
 
 
+function effect(chanNumber, dataType, mode, slotNumber, sequenceValue, num, total) {
+	script.log(sequenceValue);
+	var target = controlAdressToElement(sequenceValue);
+	script.log(target);
+	if (! target) { return; }
+	var parents = getLayerAndSequence(target);
+	if (!parents) {return; }
 
-
-/////// Util lib
-
-function explode(v) {
-	script.log("  ");
-	script.log(" proprietes : ");
-	var content = util.getObjectProperties(v);
-	for (var i = 0; i< content.length; i++) {
-		script.log("  - "+content[i]+" : "+v[content[i]]);
-	}
-
-	script.log(" methodes : ");
-	content = util.getObjectMethods(v);
-	for (var i = 0; i< content.length; i++) {
-		script.log("  - "+content[i]);
-	}
-	script.log("  ");
+	var totalTime = root.sequences.effect.totalTime.get();
+	var currentTime = root.sequences.effect.currentTime.get();
+	
+	var time = currentTime + (2*totalTime) - ((num / total) * totalTime);
+	while(time > totalTime) {time -= totalTime;}
+	
+	var val = parents.layer.automation.getValueAtPosition(time);
+	script.log(val);
+	setValueSimple(chanNumber, dataType, mode, slotNumber, val);
 }
 
-function map(value, low1, high1, low2, high2) {
-    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
-}
-
-
-function effect(targetValue, targetCV, num, total) {
+function effectCV(targetValue, targetCV, num, total) {
 	targetCV = controlAdressToElement(targetCV);
 	if (!targetCV) {return;}
 	var target = controlAdressToElement(targetValue);
@@ -367,9 +367,10 @@ function effect(targetValue, targetCV, num, total) {
 }
 
 function controlAdressToElement(a) {
-	if (!a.split) {return false;}
+	if (!a) {return false;}
 	a = a.split("/");
-	if (!a.splice) {return false;}
+	if (!a) {return false;}
+	script.log("c");
 	a.splice(0,1);
 	target = root;
 	while (a.length > 0 && target != undefined) {
@@ -401,6 +402,36 @@ function getLayerAndSequence(t) {
 		"layer":layer, 
 		"sequence":sequence, 
 	};
+}
+
+
+
+
+
+
+
+
+
+/////// Util lib
+
+function explode(v) {
+	script.log("  ");
+	script.log(" proprietes : ");
+	var content = util.getObjectProperties(v);
+	for (var i = 0; i< content.length; i++) {
+		script.log("  - "+content[i]+" : "+v[content[i]]);
+	}
+
+	script.log(" methodes : ");
+	content = util.getObjectMethods(v);
+	for (var i = 0; i< content.length; i++) {
+		script.log("  - "+content[i]);
+	}
+	script.log("  ");
+}
+
+function map(value, low1, high1, low2, high2) {
+    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
 }
 
 
