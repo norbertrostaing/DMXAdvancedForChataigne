@@ -224,6 +224,28 @@
 			}
 		},
 
+		"Effect":
+		{
+			"menu": "",
+			"callback": "effect",
+			"parameters": { 
+				"Sequence Value": {
+					"type": "Target",
+				}, 
+				"Target Custom Variable": {
+					"type": "Target",
+				}, 
+				"Element position": {
+					"type": "Integer",
+					"min":1,
+				}, 
+				"Elements total": {
+					"type": "Integer",
+					"min":1,
+				}, 
+			}
+		},
+
 	
 	}
 }

@@ -240,29 +240,53 @@ function write16bitRGB(chanNumber, value) {
 
 ////////  Patch helper
 
-var variablesGroup = script.addTargetParameter("Multiplex filler custom variable","Select the custom variable group that you wanna use as values");
+var variablesGroup = script.addTargetParameter("Patch helper variables","Select the custom variable group that you wanna use as values");
 variablesGroup.setAttribute("targetType","container");
 variablesGroup.setAttribute("root",root.customVariables);
 variablesGroup.setAttribute("searchLevel",0);
 
-var inputList = script.addTargetParameter("Multiplex filler list","Select the multiplex list that you wanna fill");
+var inputList = script.addTargetParameter("Patch helper list","Select the multiplex list that you wanna fill");
 inputList.setAttribute("targetType","container");
 inputList.setAttribute("root",root.states);
 inputList.setAttribute("searchLevel",4);
 
-var fillInputListBtn = script.addTrigger("Fill input list", "Fill selected list with selected custom variable list");
+var dmxChannelsList = script.addTargetParameter("Patch helper dmx channels list","Select the multiplex list that you wanna fill");
+dmxChannelsList.setAttribute("targetType","container");
+dmxChannelsList.setAttribute("root",root.states);
+dmxChannelsList.setAttribute("searchLevel",4);
+
+var cvStart = script.addIntParameter("Patch helper list Start ","List position for the first custom variable ", 1, 1);
+
+var dmxStart = script.addIntParameter("Patch helper DMX First Adress","DMX address of the first custom variable ", 1, 1);
+var dmxOffset = script.addIntParameter("Patch helper DMX Offset","DMX adress every X channels", 1, 1);
+
+var fillInputListBtn = script.addTrigger("Fill input list", "Fill selected list with selected custom variables");
 
 function fillInputList() {
 	var group = variablesGroup.getTarget();
-	var list = inputList.getTarget();
-	if (!group.variables || !list) {return;}
+	var cvlist = inputList.getTarget();
+	var dmxlist = dmxChannelsList.getTarget();
+	if (!group.variables || !cvlist) {return;}
+	var delta;
 
 	var variables = group.variables.getItems();
-	var inputs = getInputListElements(list);
-	var max = Math.min(variables.length, inputs.length);
+	var cvInputs = getInputListElements(cvlist);
+
+	var dmxIinputs = getInputListElements(dmxlist);
+	var currentDMX = dmxStart.get();
+
+	var max = Math.min(variables.length, cvInputs.length-delta);
+	delta = cvStart.get()-1;
 	for (var i = 0; i < max; i++) {
-		inputs[i].set(variables[i].getChild(variables[i].name));
+		cvInputs[i+delta].set(variables[i].getChild(variables[i].name));
+
+		dmxIinputs[i+delta].set(currentDMX);
+		currentDMX += dmxOffset.get();
 	}
+
+
+	//root.states.state.processors.multiplex1.lists.dmx.#2
+
 }
 
 function scriptParameterChanged(param) {
@@ -296,10 +320,11 @@ function getInputListElements(element) {
 /////// Util lib
 
 function explode(v) {
+	script.log("  ");
 	script.log(" proprietes : ");
 	var content = util.getObjectProperties(v);
 	for (var i = 0; i< content.length; i++) {
-		script.log("  - "+content[i]);
+		script.log("  - "+content[i]+" : "+v[content[i]]);
 	}
 
 	script.log(" methodes : ");
@@ -307,11 +332,66 @@ function explode(v) {
 	for (var i = 0; i< content.length; i++) {
 		script.log("  - "+content[i]);
 	}
+	script.log("  ");
 }
 
 function map(value, low1, high1, low2, high2) {
-	script.log("called with "+value+", "+low1+", "+high1+", "+low2+", "+high2);
-	script.log(high2[0]);
-
     return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
 }
+
+
+function effect(targetValue, targetCV, num, total) {
+	targetCV = controlAdressToElement(targetCV);
+	if (!targetCV) {return;}
+	var target = controlAdressToElement(targetValue);
+	if (! target) { return; }
+	var parents = getLayerAndSequence(target);
+	if (!parents) {return; }
+
+	var totalTime = root.sequences.effect.totalTime.get();
+	var currentTime = root.sequences.effect.currentTime.get();
+	
+	var time = currentTime + (2*totalTime) - ((num / total) * totalTime);
+	while(time > totalTime) {time -= totalTime;}
+	
+	var val = parents.layer.automation.getValueAtPosition(time);
+	targetCV.set(val);
+
+}
+
+function controlAdressToElement(a) {
+	a = a.split("/");
+	a.splice(0,1);
+	target = root;
+	while (a.length > 0 && target != undefined) {
+		target = target.getChild(a[0]);
+		a.splice(0,1);
+	}
+	return target;
+} 
+
+function getLayerAndSequence(t) {
+	var layer = false;
+	var sequence = false;
+	var noParent = false;
+
+	while (!layer && !sequence && !noParent) {
+		if (!t.is(root)) {
+			t = t.getParent();
+			if (t.automation != undefined) {layer = t;}
+			if (t.currentTime != undefined) {sequence = t;}
+		} else {
+			noParent = true;
+		}
+	}
+
+	if (noParent) {
+		return false;
+	}
+	return {
+		"layer":layer, 
+		"sequence":sequence, 
+	};
+}
+
+
