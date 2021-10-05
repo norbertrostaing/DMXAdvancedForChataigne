@@ -367,8 +367,9 @@ function effect(targetValue, targetCV, num, total) {
 }
 
 function controlAdressToElement(a) {
-	if (!a) {return false;}
+	if (!a.split) {return false;}
 	a = a.split("/");
+	if (!a.splice) {return false;}
 	a.splice(0,1);
 	target = root;
 	while (a.length > 0 && target != undefined) {
