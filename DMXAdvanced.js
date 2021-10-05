@@ -14,10 +14,21 @@ var dmxSlot = function() {
 
 function setValueSimple(chanNumber, dataType, mode, slotNumber, value) {
 	if (dataType == "i8") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
-	else if (dataType == "i16") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
-	else if (dataType == "rgb8") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
-	else if (dataType == "rgb16") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
+	else if (dataType == "i16") {setValue(chanNumber,dataType, mode, slotNumber, false, value, false, false); }
+	else if (dataType == "rgb8") {setValue(chanNumber,dataType, mode, slotNumber, false, false, valus, false); }
+	else if (dataType == "rgb16") {setValue(chanNumber,dataType, mode, slotNumber, false, false, false, value); }
 }
+
+function setSlotLevel(chanNumber, dataType, mode, slotNumber, value) {
+	if (slotsData[chanNumber-1][mode] && slotsData[chanNumber-1][mode][""+slotNumber]) {
+		slotsData[chanNumber-1][mode][""+slotNumber].level = value;
+		if (dataType == "i8") {processChannelI8(chanNumber); }
+		else if (dataType == "i16") {processChannelI16(chanNumber); }
+		else if (dataType == "rgb8") {processChannelRGB8bit(chanNumber); }
+		else if (dataType == "rgb16") {processChannelRGB16bit(chanNumber); }
+	}
+}
+
 
 function setValue(chanNumber, dataType, mode, slotNumber, valuei8, valuei16, valuergb8, valuergb16) {
 	if (dataType == "i8") {setChannel8bit(chanNumber, mode, slotNumber, valuei8); }
@@ -47,7 +58,7 @@ function setChannelRGB16bit(chanNumber, mode, slotNumber, value) {
 }
 
 function clearSlot(chanNumber, mode, slotNumber) {
-	if (slotsData[chanNumber-1][mode] && slotsData[chanNumber-1][mode][""+slotNumber]) {
+	if (slotsData[chanNumber-1][mode]!==undefined && slotsData[chanNumber-1][mode][""+slotNumber]!==undefined) {
 		if (mode == "LTP") {
 			var slot = slotsData[chanNumber-1][mode][""+slotNumber];
 			var index = slotsData[chanNumber-1].LTPStack.indexOf(slot);
@@ -84,17 +95,14 @@ function clearAllChannel(mode) {
 
 function updateSlot(chanNumber, mode, slotNumber, value, dataType) {
 	slotsData[chanNumber-1].dataType = dataType;
-	if (mode == "HTP") {setHTPChannel(chanNumber, slotNumber, value) ;}
+	if (mode == "HTP") {setHTPChannel(chanNumber, slotNumber, value);}
 	else if (mode == "LTP") {setLTPChannel(chanNumber, slotNumber, value) ;}
 	else if (mode == "FX") {setFXChannel(chanNumber, slotNumber, value) ;}
 	else if (mode == "Master") {setMasterChannel(chanNumber, value) ;}
 }
 
-
-
-
 function setHTPChannel(chanNumber, slotNumber, value) {
-	if (!slotsData[chanNumber-1].HTP[""+slotNumber]) {slotsData[chanNumber-1].HTP[""+slotNumber] = new dmxSlot();}
+	if (!slotsData[chanNumber-1].HTP[""+slotNumber]) {slotsData[chanNumber-1].HTP[""+slotNumber] = new dmxSlot(); }
 	slotsData[chanNumber-1].HTP[""+slotNumber].value = value;
 }
 
@@ -110,7 +118,9 @@ function setLTPChannel(chanNumber, slotNumber, value) {
 }
 
 function setFXChannel(chanNumber, slotNumber, value) {
-	if (!slotsData[chanNumber-1].FX[""+slotNumber]) {slotsData[chanNumber-1].FX[""+slotNumber] = new dmxSlot();}
+	if (!slotsData[chanNumber-1].FX[""+slotNumber]) {
+		slotsData[chanNumber-1].FX[""+slotNumber] = new dmxSlot();
+	}
 	slotsData[chanNumber-1].FX[""+slotNumber].value = value;
 }
 
@@ -140,10 +150,9 @@ function processChannelRGB16(chanNumber) {
 }
 
 function processNumericChannel(chanNumber) {
-	val = 0;
+	var val = 0;
 	var data = slotsData[chanNumber-1];
-
-	if (data.LTPStack) {
+	if (data.LTPStack.length > 0 ) {
 		for (var i = 0; i < data.LTPStack.length; i++) {
 			var slot = data.LTPStack[i];
 			val = map(slot.level,0,1,val, slot.value);
@@ -161,6 +170,7 @@ function processNumericChannel(chanNumber) {
 		for (var i = 0; i< slotsId.length; i++) {
 			var s = data.FX[slotsId[i]];
 			val += s.value * s.level;
+
 		}
 	}
 
@@ -329,21 +339,18 @@ function getInputListElements(element) {
 
 
 function effect(chanNumber, dataType, mode, slotNumber, sequenceValue, num, total) {
-	script.log(sequenceValue);
 	var target = controlAdressToElement(sequenceValue);
-	script.log(target);
 	if (! target) { return; }
 	var parents = getLayerAndSequence(target);
 	if (!parents) {return; }
 
-	var totalTime = root.sequences.effect.totalTime.get();
-	var currentTime = root.sequences.effect.currentTime.get();
+	var totalTime = parents.sequence.totalTime.get();
+	var currentTime = parents.sequence.currentTime.get();
 	
 	var time = currentTime + (2*totalTime) - ((num / total) * totalTime);
 	while(time > totalTime) {time -= totalTime;}
 	
 	var val = parents.layer.automation.getValueAtPosition(time);
-	script.log(val);
 	setValueSimple(chanNumber, dataType, mode, slotNumber, val);
 }
 
@@ -370,7 +377,6 @@ function controlAdressToElement(a) {
 	if (!a) {return false;}
 	a = a.split("/");
 	if (!a) {return false;}
-	script.log("c");
 	a.splice(0,1);
 	target = root;
 	while (a.length > 0 && target != undefined) {
@@ -385,7 +391,7 @@ function getLayerAndSequence(t) {
 	var sequence = false;
 	var noParent = false;
 
-	while (!layer && !sequence && !noParent) {
+	while ((!layer || !sequence) && !noParent) {
 		if (!t.is(root)) {
 			t = t.getParent();
 			if (t.automation != undefined) {layer = t;}

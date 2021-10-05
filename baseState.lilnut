@@ -1,0 +1,513 @@
+{
+  "modules": null,
+  "customVariables": null,
+  "states": [
+    {
+      "parameters": [
+        {
+          "value": [
+            -202.0,
+            212.0
+          ],
+          "controlAddress": "/viewUIPosition"
+        },
+        {
+          "value": [
+            396.0,
+            278.0
+          ],
+          "controlAddress": "/viewUISize"
+        },
+        {
+          "value": true,
+          "controlAddress": "/active"
+        }
+      ],
+      "niceName": "DMX Advanced",
+      "type": "State",
+      "processors": {
+        "items": [
+          {
+            "parameters": [
+              {
+                "value": true,
+                "controlAddress": "/enabled"
+              },
+              {
+                "value": 84.0,
+                "controlAddress": "/listSize"
+              },
+              {
+                "value": 1,
+                "hexMode": false,
+                "controlAddress": "/count"
+              },
+              {
+                "value": 1,
+                "hexMode": false,
+                "controlAddress": "/previewIndex"
+              }
+            ],
+            "niceName": "Patch",
+            "editorIsCollapsed": true,
+            "containers": {
+              "lists": {
+                "items": [
+                  {
+                    "niceName": "CV",
+                    "type": "Input Values",
+                    "listSize": 1
+                  },
+                  {
+                    "niceName": "DMX",
+                    "type": "Integer",
+                    "listSize": 1
+                  }
+                ],
+                "viewOffset": [
+                  0,
+                  0
+                ],
+                "viewZoom": 1.0
+              },
+              "processors": {
+                "hideInEditor": true,
+                "items": [
+                  {
+                    "niceName": "Custom Variable to DMX",
+                    "editorIsCollapsed": true,
+                    "type": "Mapping",
+                    "im": {
+                      "items": [
+                        {
+                          "parameters": [
+                            {
+                              "value": "/cv",
+                              "controlAddress": "/inputList"
+                            }
+                          ],
+                          "niceName": "Input List",
+                          "type": "Input List"
+                        }
+                      ],
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    },
+                    "params": {
+                      "parameters": [
+                        {
+                          "value": 50,
+                          "hexMode": false,
+                          "controlAddress": "/updateRate"
+                        }
+                      ],
+                      "editorIsCollapsed": true
+                    },
+                    "filters": {
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    },
+                    "outputs": {
+                      "items": [
+                        {
+                          "niceName": "MappingOutput",
+                          "type": "BaseItem",
+                          "commandModule": "dmxAdvanced",
+                          "commandPath": "",
+                          "commandType": "Set Value",
+                          "command": {
+                            "parameters": [
+                              {
+                                "value": "HTP",
+                                "controlAddress": "/mode"
+                              },
+                              {
+                                "value": 1,
+                                "hexMode": false,
+                                "controlAddress": "/slotNumber"
+                              },
+                              {
+                                "value": 0,
+                                "controlAddress": "/value_RGB8_"
+                              },
+                              {
+                                "value": 0,
+                                "controlAddress": "/value_RGB16_"
+                              }
+                            ],
+                            "paramLinks": {
+                              "channel": {
+                                "linkType": 2,
+                                "list": "dmx"
+                              },
+                              "value_dimmer8_": {
+                                "linkType": 1,
+                                "mappingValueIndex": 0
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    }
+                  }
+                ],
+                "viewOffset": [
+                  0,
+                  0
+                ],
+                "viewZoom": 1.0
+              }
+            },
+            "type": "Multiplex"
+          },
+          {
+            "parameters": [
+              {
+                "value": true,
+                "controlAddress": "/enabled"
+              },
+              {
+                "value": 24.0,
+                "controlAddress": "/listSize"
+              },
+              {
+                "value": 5,
+                "hexMode": false,
+                "controlAddress": "/count"
+              }
+            ],
+            "niceName": "Effet",
+            "editorIsCollapsed": true,
+            "containers": {
+              "lists": {
+                "items": [
+                  {
+                    "parameters": [
+                      {
+                        "value": 7,
+                        "hexMode": false,
+                        "controlAddress": "/#1"
+                      },
+                      {
+                        "value": 9,
+                        "hexMode": false,
+                        "controlAddress": "/#2"
+                      },
+                      {
+                        "value": 4,
+                        "hexMode": false,
+                        "controlAddress": "/#3"
+                      },
+                      {
+                        "value": 5,
+                        "hexMode": false,
+                        "controlAddress": "/#4"
+                      },
+                      {
+                        "value": 8,
+                        "hexMode": false,
+                        "controlAddress": "/#5"
+                      }
+                    ],
+                    "niceName": "Channels",
+                    "type": "Integer",
+                    "listSize": 5
+                  }
+                ],
+                "viewOffset": [
+                  0,
+                  0
+                ],
+                "viewZoom": 1.0
+              },
+              "processors": {
+                "hideInEditor": true,
+                "items": [
+                  {
+                    "niceName": "Mapping value",
+                    "editorIsCollapsed": true,
+                    "type": "Mapping",
+                    "im": {
+                      "items": [
+                        {
+                          "parameters": [
+                            {
+                              "value": "/sequences/effetLampes/currentTime",
+                              "controlAddress": "/inputValue"
+                            }
+                          ],
+                          "niceName": "Input Value",
+                          "type": "Input Value"
+                        }
+                      ],
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    },
+                    "params": {
+                      "parameters": [
+                        {
+                          "value": 50,
+                          "hexMode": false,
+                          "controlAddress": "/updateRate"
+                        }
+                      ],
+                      "editorIsCollapsed": true
+                    },
+                    "filters": {
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    },
+                    "outputs": {
+                      "items": [
+                        {
+                          "niceName": "MappingOutput",
+                          "type": "BaseItem",
+                          "commandModule": "dmxAdvanced",
+                          "commandPath": "",
+                          "commandType": "Effect",
+                          "command": {
+                            "parameters": [
+                              {
+                                "value": "FX",
+                                "controlAddress": "/mode"
+                              },
+                              {
+                                "value": 2,
+                                "hexMode": false,
+                                "controlAddress": "/slotNumber"
+                              },
+                              {
+                                "value": "/sequences/effetLampes/layers/mapping/value",
+                                "controlAddress": "/sequenceValue"
+                              },
+                              {
+                                "value": 5,
+                                "hexMode": false,
+                                "controlAddress": "/elementsTotal"
+                              }
+                            ],
+                            "paramLinks": {
+                              "channel": {
+                                "linkType": 2,
+                                "list": "channels"
+                              },
+                              "elementPosition": {
+                                "linkType": 4
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    }
+                  },
+                  {
+                    "niceName": "Mapping level",
+                    "editorIsCollapsed": true,
+                    "type": "Mapping",
+                    "im": {
+                      "items": [
+                        {
+                          "parameters": [
+                            {
+                              "value": "/customVariables/customVariables/values/effet/mult",
+                              "controlAddress": "/inputValue"
+                            }
+                          ],
+                          "niceName": "Input Value",
+                          "type": "Input Value"
+                        }
+                      ],
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    },
+                    "params": {
+                      "parameters": [
+                        {
+                          "value": 50,
+                          "hexMode": false,
+                          "controlAddress": "/updateRate"
+                        }
+                      ],
+                      "editorIsCollapsed": true
+                    },
+                    "filters": {
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    },
+                    "outputs": {
+                      "items": [
+                        {
+                          "niceName": "MappingOutput",
+                          "type": "BaseItem",
+                          "commandModule": "dmxAdvanced",
+                          "commandPath": "",
+                          "commandType": "Script callback",
+                          "command": {
+                            "parameters": [
+                              {
+                                "value": "setSlotLevel",
+                                "controlAddress": "/callback"
+                              }
+                            ],
+                            "paramLinks": {
+                            },
+                            "customValues": {
+                              "items": [
+                                {
+                                  "parameters": [
+                                    {
+                                      "value": 4,
+                                      "hexMode": false,
+                                      "controlAddress": "/#1"
+                                    }
+                                  ],
+                                  "niceName": "#1",
+                                  "type": "Integer",
+                                  "param": {
+                                    "value": 4,
+                                    "hexMode": false,
+                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#1/#1"
+                                  },
+                                  "paramLink": {
+                                    "linkType": 2,
+                                    "list": "channels"
+                                  }
+                                },
+                                {
+                                  "parameters": [
+                                    {
+                                      "value": "i8",
+                                      "controlAddress": "/#2"
+                                    }
+                                  ],
+                                  "niceName": "#2",
+                                  "type": "String",
+                                  "param": {
+                                    "value": "i8",
+                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#2/#2"
+                                  },
+                                  "paramLink": {
+                                    "linkType": 0
+                                  }
+                                },
+                                {
+                                  "parameters": [
+                                    {
+                                      "value": "FX",
+                                      "controlAddress": "/#3"
+                                    }
+                                  ],
+                                  "niceName": "#3",
+                                  "type": "String",
+                                  "param": {
+                                    "value": "FX",
+                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#3/#3"
+                                  },
+                                  "paramLink": {
+                                    "linkType": 0
+                                  }
+                                },
+                                {
+                                  "parameters": [
+                                    {
+                                      "value": 2,
+                                      "hexMode": false,
+                                      "controlAddress": "/#4"
+                                    }
+                                  ],
+                                  "niceName": "#4",
+                                  "type": "Integer",
+                                  "param": {
+                                    "value": 2,
+                                    "hexMode": false,
+                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#4/#4"
+                                  },
+                                  "paramLink": {
+                                    "linkType": 0
+                                  }
+                                },
+                                {
+                                  "parameters": [
+                                    {
+                                      "value": 0.9650455713272095,
+                                      "controlAddress": "/#5"
+                                    }
+                                  ],
+                                  "niceName": "#5",
+                                  "type": "Float",
+                                  "param": {
+                                    "value": 0.9650455713272095,
+                                    "controlAddress": "/states/dmxAdvanced/processors/effet/processors/mappingLevel/outputs/mappingOutput/command/arguments/#5/#5"
+                                  },
+                                  "paramLink": {
+                                    "linkType": 1,
+                                    "mappingValueIndex": 0
+                                  }
+                                }
+                              ],
+                              "viewOffset": [
+                                0,
+                                0
+                              ],
+                              "viewZoom": 1.0
+                            }
+                          }
+                        }
+                      ],
+                      "viewOffset": [
+                        0,
+                        0
+                      ],
+                      "viewZoom": 1.0
+                    }
+                  }
+                ],
+                "viewOffset": [
+                  0,
+                  0
+                ],
+                "viewZoom": 1.0
+              }
+            },
+            "type": "Multiplex"
+          }
+        ],
+        "viewOffset": [
+          0,
+          0
+        ],
+        "viewZoom": 1.0
+      }
+    }
+  ],
+  "sequences": null,
+  "routers": null
+}
