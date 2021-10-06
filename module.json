@@ -118,11 +118,7 @@
 			"callback": "setSlotLevel",
 			"parameters": { 
 				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
+					"type": "String"
 				}, 
 
 				"Mode": {
@@ -135,11 +131,8 @@
 					}
 				}, 
 
-				"Slot Number": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"useForMapping": true
+				"Slot": {
+					"type": "String"
 				}, 
 				"Value": { 
 					"type":"Float", 
@@ -157,11 +150,7 @@
 			"callback": "clearSlot",
 			"parameters": { 
 				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
+					"type": "String"
 				}, 
 				"Mode": {
 					"type": "Enum",
@@ -171,11 +160,8 @@
 						"FX" : "FX",
 					}
 				}, 
-				"Slot Number": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"useForMapping": true
+				"Slot": {
+					"type": "String"
 				}
 			}
 		},
@@ -186,11 +172,7 @@
 			"callback": "clearChannel",
 			"parameters": { 
 				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
+					"type": "String"
 				}, 
 				"Mode": {
 					"type": "Enum",
@@ -210,11 +192,7 @@
 			"callback": "effect",
 			"parameters": { 
 				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
+					"type": "String"
 				}, 
 
 
@@ -237,11 +215,8 @@
 						"Master" : "Master"
 					}
 				}, 
-				"Slot Number": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"useForMapping": true
+				"Slot": {
+					"type": "String"
 				}, 
 				"Sequence Value": {
 					"type": "Target",

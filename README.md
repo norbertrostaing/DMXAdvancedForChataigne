@@ -1,13 +1,22 @@
 # DMXAdvancedForChataigne
 
+## Patch
+
+Instead of use directly the dmx channel numbers in mappings, you can now use a string representing the name of your parameter.
+When you try to assign it a value, the channel is added in the patch container, in the module's parameters.
+In this patch, you can add multiple patch values for the same parameter.
+
 ## LTP and HTP support for DMX
 
 ### Usage
-select the right method for your data type (dimmer or color, 8 or 16bits) then :
-- Channel : DMX channel for the output
+You can set values for you channel with the method "Set value" :
+- Channel : Name of your channel
+- Data type : defines the kind of data written in DMX
 - Mode : How multiple values are handled (LTP, HTP, FX or Master)
 - Slot : each slot has its own value, you can modify a slot value from different mappings and actions
 - Value : value desired : float or color
+
+You can also set a level for each slot of each mode with "Set slot level" (same parameters than above).
 
 ### Modes
 - LTP : the last slot called is applied to channel. When cleared, the one called previously is called.
@@ -27,25 +36,24 @@ A "Clear all slots" button is present on script part to clear all slots.
 
 
 ## Patch helper
-To help you patch dmx channels, the simplest way is to create a multiplex with an **input list of custom variables** representing your channel desired values and a **custom list of integer** representing your DMX adresses.
-In this multiplex, you can add a mapping with your multiplex custom variable list for input and a dimmer or color function wwith parameters : 
+To help you assigne custom variables to channels, the simplest way is to create a multiplex with an **input list of custom variables** representing your channel desired names and values.
+In this multiplex, you can add a mapping with your multiplex custom variable list for input and a dimmer or color function with parameters :
 - Channel : your DMX adresses list
 - Mode : you desired mode for these channels
-- Slot number : in wich slot you wanna write these values
+- Slot : in wich slot you wanna write these values
 - Value : your custom variables list
 Once this done, you can use the patch helper fields in the script section to auto fill your custom variable list with all variables of a custom variable group
 
 
 
 ## Effects
-	! work in progress !
 To try the effect function of the module, you must start by create a sequence with a mapping.
 This sequence will be the path of your effect.
 Then you should create a multiplex with one custom target list with all the custom variables you want to assign
 in the multiplex, you can now add a mapping with **the current time of you sequence as input** and the effect function as output with these parameters :
-- Sequence layer : your sequence layer to use as path
-- Target element : your target list from multiplex
+- Channel ,Data type, Mode, Slot : Set value method will be called with these parameters
+- Sequence value : your sequence value to use as path
 - Element position : multiplex index 0-n
 - Element total : the number of elements 
-when playing your sequence, you should see your custom variables values moving along your path
+the effect runs when when playing your sequence
 

@@ -6,6 +6,7 @@ var slotsData = {};
 
 function verifSlotData(chanName) {
 	if (!slotsData[chanName]) {
+		script.log(chanName);
 		slotsData[chanName] = {"HTP" : {}, "LTP" : {}, "LTPStack" : [], "FX" : {}, "Master" : 1, "dataType" : ""};
 	}
 }
@@ -166,7 +167,7 @@ function processNumericChannel(chanName) {
 	if (data.LTPStack.length > 0 ) {
 		for (var i = 0; i < data.LTPStack.length; i++) {
 			var slot = data.LTPStack[i];
-			val = map(slot.level,0,1,val, slot.value);
+			val = map(slot.level, 0, 1, val, slot.value);
 		}
 	}
 	if (data.HTP) {
@@ -295,20 +296,15 @@ variablesGroup.setAttribute("targetType","container");
 variablesGroup.setAttribute("root",root.customVariables);
 variablesGroup.setAttribute("searchLevel",0);
 
-var inputList = script.addTargetParameter("Patch helper list","Select the multiplex list that you wanna fill");
+var inputList = script.addTargetParameter("Patch helper custom variables list","Select the multiplex list that you wanna fill");
 inputList.setAttribute("targetType","container");
 inputList.setAttribute("root",root.states);
 inputList.setAttribute("searchLevel",4);
 
-var dmxChannelsList = script.addTargetParameter("Patch helper dmx channels list","Select the multiplex list that you wanna fill");
+var dmxChannelsList = script.addTargetParameter("Patch helper channels list","Select the multiplex list that you wanna fill");
 dmxChannelsList.setAttribute("targetType","container");
 dmxChannelsList.setAttribute("root",root.states);
 dmxChannelsList.setAttribute("searchLevel",4);
-
-var cvStart = script.addIntParameter("Patch helper list Start ","List position for the first custom variable ", 1, 1);
-
-var dmxStart = script.addIntParameter("Patch helper DMX First Adress","DMX address of the first custom variable ", 1, 1);
-var dmxOffset = script.addIntParameter("Patch helper DMX Offset","DMX adress every X channels", 1, 1);
 
 var fillInputListBtn = script.addTrigger("Fill input list", "Fill selected list with selected custom variables");
 
@@ -317,21 +313,16 @@ function fillInputList() {
 	var cvlist = inputList.getTarget();
 	var dmxlist = dmxChannelsList.getTarget();
 	if (!group.variables || !cvlist) {return;}
-	var delta;
 
 	var variables = group.variables.getItems();
 	var cvInputs = getInputListElements(cvlist);
 
 	var dmxIinputs = getInputListElements(dmxlist);
-	var currentDMX = dmxStart.get();
 
-	var max = Math.min(variables.length, cvInputs.length-delta);
-	delta = cvStart.get()-1;
+	var max = Math.min(variables.length, cvInputs.length);
 	for (var i = 0; i < max; i++) {
-		cvInputs[i+delta].set(variables[i].getChild(variables[i].name));
-
-		dmxIinputs[i+delta].set(currentDMX);
-		currentDMX += dmxOffset.get();
+		cvInputs[i].set(variables[i].getChild(variables[i].name));
+		dmxIinputs[i].set(variables[i].niceName);
 	}
 
 
@@ -437,9 +428,9 @@ function getLayerAndSequence(t) {
 
 
 
-
 var patch = {};
 var patchContainer = local.parameters.addContainer("Patch");
+var patchReset = local.parameters.addTrigger("Reset Patch", "Reset all patch values");
 
 var deletePatchItems = [];
 
@@ -466,16 +457,50 @@ function updatePatchDisplay() {
 		var channelContainer = patchContainer.getChild(name);
 		if (channelContainer == undefined) {
 			channelContainer = patchContainer.addContainer(name);
-			channelContainer.addTrigger("Add patch", "Press me to add a new patch value");
-			channelContainer.addTrigger("Delete patch", "Press me to delete a patch value or this channel");
-			channelContainer.addIntParameter("Address 1", "DMX Address", 1, 1, 512);
+			addPatchButtons(channelContainer);
+			var btnAddress = channelContainer.addIntParameter("Address 1", "DMX Address", 0, 0, 512);
+			btnAddress.setAttribute("saveValueOnly",false);
 		} 
 	}
 }
 
+function init() {
+	checkAddRemoveButtons();
+	readAllPatchFromInput();
+}
+
+function readAllPatchFromInput() {
+	var children = util.getObjectProperties(patchContainer);
+	for (var i = 0; i < children.length; i++) {
+		var elmt = patchContainer[children[i]];
+		if (elmt._type == "Container") {
+			readPatchFromInput(elmt.name, elmt.niceName);
+		}
+		script.log(patchContainer[children[i]]._type);
+	}
+}
+
+function checkAddRemoveButtons() {
+	var children = util.getObjectProperties(patchContainer);
+	for (var i = 0; i < children.length; i++) {
+		var elmt = patchContainer[children[i]];
+		script.log(elmt);
+		if (elmt._type == "Container" && !elmt.addPatch) {
+			addPatchButtons(elmt);
+		}
+	}
+}
+
+function addPatchButtons(element) {
+	var btnAdd = element.addTrigger("Add patch", "Press me to add a new patch value");
+	var btnDelete = element.addTrigger("Delete patch", "Press me to delete a patch value or this channel");
+}
+
 function moduleParameterChanged(param) {
 	var parent = param.getParent();
-	if (param.name == "addPatch" || param.name == "deletePatch") {
+	if (param.is(patchReset)) {
+		resetPatch();
+	} else if (param.name == "addPatch" || param.name == "deletePatch") {
 		var next = 0;
 		var valid = true;
 		while (valid) {
@@ -483,7 +508,8 @@ function moduleParameterChanged(param) {
 			valid = parent["address"+next] !== undefined;
 		}
 		if (param.name == "addPatch") {
-			parent.addIntParameter("Address "+(next), "DMX Address (set to 0 means disabled)", 0, 0, 512);
+			var addressField = parent.addIntParameter("Address "+(next), "DMX Address (set to 0 means disabled)", 0, 0, 512);
+			addressField.setAttribute("saveValueOnly",false);
 		} else if (param.name == "deletePatch") {
 			if (next > 2) {
 				parent.removeParameter("address"+(next-1));
@@ -496,6 +522,13 @@ function moduleParameterChanged(param) {
 	} else {
 		script.log(param.name);
 	}
+}
+
+function resetPatch() {
+	local.parameters.removeContainer("Patch");
+	patchContainer = local.parameters.addContainer("Patch");
+	patch = {};
+
 }
 
 function readPatchFromInput(name, niceName){
@@ -515,7 +548,6 @@ function readPatchFromInput(name, niceName){
 			}
 		}
 	}
-	// liberer ici les circuits depatchés
 	var type = slotsData[niceName].dataType;
 
 	for (var i = 0; i< currentPatch.length; i++) {
