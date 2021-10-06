@@ -195,9 +195,8 @@ function processNumericChannel(chanName) {
 
 
 function processRGBChannel(chanName) {
-	val = [0,0,0,0];
+	var val = [0,0,0,0];
 	var data = slotsData[chanName];
-
 	if (data.LTPStack) {
 		for (var i = 0; i < data.LTPStack.length; i++) {
 			var slot = data.LTPStack[i];
@@ -266,9 +265,9 @@ function write8bitRGB(chanName, value) {
 	var chans = getPatch(chanName);
 	for (var i = 0; i< chans.length; i++) {
 		var address = chans[i];
-		local.send(chanName+0, r);
-		local.send(chanName+1, g);
-		local.send(chanName+2, b);
+		local.send(address+0, r);
+		local.send(address+1, g);
+		local.send(address+2, b);
 	}
 }
 
@@ -279,12 +278,13 @@ function write16bitRGB(chanName, value) {
 	var chans = getPatch(chanName);
 	for (var i = 0; i< chans.length; i++) {
 		var address = chans[i];
-		local.send(chanName+0, Math.floor(r/256));
-		local.send(chanName+1, Math.floor(r%256));
-		local.send(chanName+2, Math.floor(g/256));
-		local.send(chanName+3, Math.floor(g%256));
-		local.send(chanName+4, Math.floor(b/256));
-		local.send(chanName+5, Math.floor(b%256));
+		script.log(address);
+		local.send(address+0, Math.floor(r/256));
+		local.send(address+1, Math.floor(r%256));
+		local.send(address+2, Math.floor(g/256));
+		local.send(address+3, Math.floor(g%256));
+		local.send(address+4, Math.floor(b/256));
+		local.send(address+5, Math.floor(b%256));
 	}
 }
 
