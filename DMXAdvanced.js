@@ -2,9 +2,12 @@
 
 var clearAllSlotsBtn = script.addTrigger("Clear all slots", "Clear all slots for all channels");
 
-var slotsData = [];
-for (var i = 0; i < 512; i++) {
-	slotsData[i] = {"HTP" : {}, "LTP" : {}, "LTPStack" : [], "FX" : {}, "Master" : 1, "dataType" : ""};
+var slotsData = {};
+
+function verifSlotData(chanName) {
+	if (!slotsData[chanName]) {
+		slotsData[chanName] = {"HTP" : {}, "LTP" : {}, "LTPStack" : [], "FX" : {}, "Master" : 1, "dataType" : ""};
+	}
 }
 
 var dmxSlot = function() {
@@ -12,77 +15,84 @@ var dmxSlot = function() {
 	this.level = 1;
 };
 
-function setValueSimple(chanNumber, dataType, mode, slotNumber, value) {
-	if (dataType == "i8") {setValue(chanNumber,dataType, mode, slotNumber, value, false, false, false); }
-	else if (dataType == "i16") {setValue(chanNumber,dataType, mode, slotNumber, false, value, false, false); }
-	else if (dataType == "rgb8") {setValue(chanNumber,dataType, mode, slotNumber, false, false, valus, false); }
-	else if (dataType == "rgb16") {setValue(chanNumber,dataType, mode, slotNumber, false, false, false, value); }
+function setValueSimple(chanName, dataType, mode, slotName, value) {
+	if (dataType == "i8") {setValue(chanName,dataType, mode, slotName, value, false, false, false); }
+	else if (dataType == "i16") {setValue(chanName,dataType, mode, slotName, false, value, false, false); }
+	else if (dataType == "rgb8") {setValue(chanName,dataType, mode, slotName, false, false, valus, false); }
+	else if (dataType == "rgb16") {setValue(chanName,dataType, mode, slotName, false, false, false, value); }
 }
 
-function setSlotLevel(chanNumber, mode, slotNumber, value) {
-	if (slotsData[chanNumber-1][mode] && slotsData[chanNumber-1][mode][""+slotNumber]) {
-		slotsData[chanNumber-1][mode][""+slotNumber].level = value;
-		if (slotsData[chanNumber-1].dataType == "i8") {processChannelI8(chanNumber); }
-		else if (slotsData[chanNumber-1].dataType == "i16") {processChannelI16(chanNumber); }
-		else if (slotsData[chanNumber-1].dataType == "rgb8") {processChannelRGB8bit(chanNumber); }
-		else if (slotsData[chanNumber-1].dataType == "rgb16") {processChannelRGB16bit(chanNumber); }
+function setSlotLevel(chanName, mode, slotName, value) {
+	if (slotsData[chanName][mode] && slotsData[chanName][mode][slotName]) {
+		slotsData[chanName][mode][slotName].level = value;
+		if (slotsData[chanName].dataType == "i8") {processChannelI8(chanName); }
+		else if (slotsData[chanName].dataType == "i16") {processChannelI16(chanName); }
+		else if (slotsData[chanName].dataType == "rgb8") {processChannelRGB8bit(chanName); }
+		else if (slotsData[chanName].dataType == "rgb16") {processChannelRGB16bit(chanName); }
 	}
 }
 
+function refreshSlot(chanName) {
+	if (slotsData[chanName].dataType == "i8") {processChannelI8(chanName);}
+	else if (slotsData[chanName].dataType == "i16") {processChannelI16(chanName);}
+	else if (slotsData[chanName].dataType == "rgb8") {processChannelRGB8(chanName);}
+	else if (slotsData[chanName].dataType == "rgb16") {processChannelRGB16(chanName);}
 
-function setValue(chanNumber, dataType, mode, slotNumber, valuei8, valuei16, valuergb8, valuergb16) {
-	if (dataType == "i8") {setChannel8bit(chanNumber, mode, slotNumber, valuei8); }
-	else if (dataType == "i16") {setChannel16bit(chanNumber, mode, slotNumber, valuei16); }
-	else if (dataType == "rgb8") {setChannelRGB8bit(chanNumber, mode, slotNumber, valuergb8); }
-	else if (dataType == "rgb16") {setChannelRGB16bit(chanNumber, mode, slotNumber, valuergb16); }
 }
 
-function setChannel8bit(chanNumber, mode, slotNumber, value) {
-	updateSlot(chanNumber, mode, slotNumber, value, "i8");
-	processChannelI8(chanNumber);
+function setValue(chanName, dataType, mode, slotName, valuei8, valuei16, valuergb8, valuergb16) {
+	if (dataType == "i8") {setChannel8bit(chanName, mode, slotName, valuei8); }
+	else if (dataType == "i16") {setChannel16bit(chanName, mode, slotName, valuei16); }
+	else if (dataType == "rgb8") {setChannelRGB8bit(chanName, mode, slotName, valuergb8); }
+	else if (dataType == "rgb16") {setChannelRGB16bit(chanName, mode, slotName, valuergb16); }
 }
 
-function setChannel16bit(chanNumber, mode, slotNumber, value) {
-	updateSlot(chanNumber, mode, slotNumber, value, "i16");
-	processChannelI16(chanNumber);
+function setChannel8bit(chanName, mode, slotName, value) {
+	updateSlot(chanName, mode, slotName, value, "i8");
+	processChannelI8(chanName);
 }
 
-function setChannelRGB8bit(chanNumber, mode, slotNumber, value) {
-	updateSlot(chanNumber, mode, slotNumber, value, "rgb8");
-	processChannelRGB8(chanNumber);
+function setChannel16bit(chanName, mode, slotName, value) {
+	updateSlot(chanName, mode, slotName, value, "i16");
+	processChannelI16(chanName);
 }
 
-function setChannelRGB16bit(chanNumber, mode, slotNumber, value) {
-	updateSlot(chanNumber, mode, slotNumber, value, "rgb16");
-	processChannelRGB16(chanNumber);
+function setChannelRGB8bit(chanName, mode, slotName, value) {
+	updateSlot(chanName, mode, slotName, value, "rgb8");
+	processChannelRGB8(chanName);
 }
 
-function clearSlot(chanNumber, mode, slotNumber) {
-	if (slotsData[chanNumber-1][mode]!==undefined && slotsData[chanNumber-1][mode][""+slotNumber]!==undefined) {
+function setChannelRGB16bit(chanName, mode, slotName, value) {
+	updateSlot(chanName, mode, slotName, value, "rgb16");
+	processChannelRGB16(chanName);
+}
+
+function clearSlot(chanName, mode, slotName) {
+	if (slotsData[chanName][mode]!==undefined && slotsData[chanName][mode][slotName]!==undefined) {
 		if (mode == "LTP") {
-			var slot = slotsData[chanNumber-1][mode][""+slotNumber];
-			var index = slotsData[chanNumber-1].LTPStack.indexOf(slot);
-			if (index != -1) {slotsData[chanNumber-1].LTPStack.splice(index,1);}
+			var slot = slotsData[chanName][mode][slotName];
+			var index = slotsData[chanName].LTPStack.indexOf(slot);
+			if (index != -1) {slotsData[chanName].LTPStack.splice(index,1);}
 		}
-		slotsData[chanNumber-1][mode][""+slotNumber] = undefined;
-		if (slotsData[chanNumber-1].dataType == "i8") {processChannelI8(chanNumber);}
-		else if (slotsData[chanNumber-1].dataType == "i16") {processChannelI16(chanNumber);}
-		else if (slotsData[chanNumber-1].dataType == "rgb8") {processChannelRGB8(chanNumber);}
-		else if (slotsData[chanNumber-1].dataType == "rgb16") {processChannelRGB16(chanNumber);}
+		slotsData[chanName][mode][slotName] = undefined;
+		if (slotsData[chanName].dataType == "i8") {processChannelI8(chanName);}
+		else if (slotsData[chanName].dataType == "i16") {processChannelI16(chanName);}
+		else if (slotsData[chanName].dataType == "rgb8") {processChannelRGB8(chanName);}
+		else if (slotsData[chanName].dataType == "rgb16") {processChannelRGB16(chanName);}
 	}
 }
 
 
-function clearChannel(chanNumber, mode) {
+function clearChannel(chanName, mode) {
 	if (mode == "LTP" || mode == "All") {
-		slotsData[chanNumber-1].LTP = {};
-		slotsData[chanNumber-1].LTPStack = {};
+		slotsData[chanName].LTP = {};
+		slotsData[chanName].LTPStack = {};
 	}
 	if (mode == "HTP" || mode == "All") {
-		slotsData[chanNumber-1].HTP = {};
+		slotsData[chanName].HTP = {};
 	}
 	if (mode == "FX" || mode == "All") {
-		slotsData[chanNumber-1].FX = {};
+		slotsData[chanName].FX = {};
 	}
 }
 
@@ -93,65 +103,66 @@ function clearAllChannel(mode) {
 }
 
 
-function updateSlot(chanNumber, mode, slotNumber, value, dataType) {
-	slotsData[chanNumber-1].dataType = dataType;
-	if (mode == "HTP") {setHTPChannel(chanNumber, slotNumber, value);}
-	else if (mode == "LTP") {setLTPChannel(chanNumber, slotNumber, value) ;}
-	else if (mode == "FX") {setFXChannel(chanNumber, slotNumber, value) ;}
-	else if (mode == "Master") {setMasterChannel(chanNumber, value) ;}
+function updateSlot(chanName, mode, slotName, value, dataType) {
+	verifSlotData(chanName);
+	slotsData[chanName].dataType = dataType;
+	if (mode == "HTP") {setHTPChannel(chanName, slotName, value);}
+	else if (mode == "LTP") {setLTPChannel(chanName, slotName, value) ;}
+	else if (mode == "FX") {setFXChannel(chanName, slotName, value) ;}
+	else if (mode == "Master") {setMasterChannel(chanName, value) ;}
 }
 
-function setHTPChannel(chanNumber, slotNumber, value) {
-	if (!slotsData[chanNumber-1].HTP[""+slotNumber]) {slotsData[chanNumber-1].HTP[""+slotNumber] = new dmxSlot(); }
-	slotsData[chanNumber-1].HTP[""+slotNumber].value = value;
+function setHTPChannel(chanName, slotName, value) {
+	if (!slotsData[chanName].HTP[slotName]) {slotsData[chanName].HTP[slotName] = new dmxSlot(); }
+	slotsData[chanName].HTP[slotName].value = value;
 }
 
-function setLTPChannel(chanNumber, slotNumber, value) {
-	if (!slotsData[chanNumber-1].LTP[""+slotNumber]) {
-		slotsData[chanNumber-1].LTP[""+slotNumber] = new dmxSlot();
+function setLTPChannel(chanName, slotName, value) {
+	if (!slotsData[chanName].LTP[slotName]) {
+		slotsData[chanName].LTP[slotName] = new dmxSlot();
 	}
-	var slot = slotsData[chanNumber-1].LTP[""+slotNumber];
+	var slot = slotsData[chanName].LTP[slotName];
 	slot.value = value;
-	var index = slotsData[chanNumber-1].LTPStack.indexOf(slot);
-	if (index != -1) {slotsData[chanNumber-1].LTPStack.splice(index,1);}
-	slotsData[chanNumber-1].LTPStack.push(slot);
+	var index = slotsData[chanName].LTPStack.indexOf(slot);
+	if (index != -1) {slotsData[chanName].LTPStack.splice(index,1);}
+	slotsData[chanName].LTPStack.push(slot);
 }
 
-function setFXChannel(chanNumber, slotNumber, value) {
-	if (!slotsData[chanNumber-1].FX[""+slotNumber]) {
-		slotsData[chanNumber-1].FX[""+slotNumber] = new dmxSlot();
+function setFXChannel(chanName, slotName, value) {
+	if (!slotsData[chanName].FX[slotName]) {
+		slotsData[chanName].FX[slotName] = new dmxSlot();
 	}
-	slotsData[chanNumber-1].FX[""+slotNumber].value = value;
+	slotsData[chanName].FX[slotName].value = value;
 }
 
-function setMasterChannel(chanNumber, value) {
-	slotsData[chanNumber-1].Master = value;
+function setMasterChannel(chanName, value) {
+	slotsData[chanName].Master = value;
 }
 
 
-function processChannelI8(chanNumber) {
-	var val = processNumericChannel(chanNumber);
-	write8bitValue(chanNumber, val);
+function processChannelI8(chanName) {
+	var val = processNumericChannel(chanName);
+	write8bitValue(chanName, val);
 }
 
-function processChannelI16(chanNumber) {
-	var val = processNumericChannel(chanNumber);
-	write16bitValue(chanNumber, val);
+function processChannelI16(chanName) {
+	var val = processNumericChannel(chanName);
+	write16bitValue(chanName, val);
 }
 
-function processChannelRGB8(chanNumber) {
-	var val = processRGBChannel(chanNumber);
-	write8bitRGB(chanNumber, val);
+function processChannelRGB8(chanName) {
+	var val = processRGBChannel(chanName);
+	write8bitRGB(chanName, val);
 }
 
-function processChannelRGB16(chanNumber) {
-	var val = processRGBChannel(chanNumber);
-	write16bitRGB(chanNumber, val);
+function processChannelRGB16(chanName) {
+	var val = processRGBChannel(chanName);
+	write16bitRGB(chanName, val);
 }
 
-function processNumericChannel(chanNumber) {
+function processNumericChannel(chanName) {
 	var val = 0;
-	var data = slotsData[chanNumber-1];
+	var data = slotsData[chanName];
 	if (data.LTPStack.length > 0 ) {
 		for (var i = 0; i < data.LTPStack.length; i++) {
 			var slot = data.LTPStack[i];
@@ -182,9 +193,9 @@ function processNumericChannel(chanNumber) {
 }
 
 
-function processRGBChannel(chanNumber) {
+function processRGBChannel(chanName) {
 	val = [0,0,0,0];
-	var data = slotsData[chanNumber-1];
+	var data = slotsData[chanName];
 
 	if (data.LTPStack) {
 		for (var i = 0; i < data.LTPStack.length; i++) {
@@ -226,38 +237,54 @@ function processRGBChannel(chanNumber) {
 
 
 
-function write8bitValue(chanNumber, value) {
+function write8bitValue(chanName, value) {
 	value = Math.round(value*255);
-	local.send(chanNumber, value);
+	var chans = getPatch(chanName);
+	for (var i = 0; i< chans.length; i++) {
+		var address = chans[i];
+		local.send(address, value);
+	}
 }
 
-function write16bitValue(chanNumber, value) {
+function write16bitValue(chanName, value) {
 	value = value * ((256 * 256)-1);
 	var msb = Math.floor(value / 256);
 	var lsb = Math.floor(value % 256);
-	local.send(chanNumber, msb);
-	local.send(chanNumber+1, lsb);
+	var chans = getPatch(chanName);
+	for (var i = 0; i< chans.length; i++) {
+		var address = chans[i];
+		local.send(address, msb);
+		local.send(address+1, lsb);
+	}
 }
 
-function write8bitRGB(chanNumber, value) {
+function write8bitRGB(chanName, value) {
 	var r = Math.round(value[0]*255);
-	local.send(chanNumber+0, r);
 	var g = Math.round(value[1]*255);
-	local.send(chanNumber+1, g);
 	var b = Math.round(value[2]*255);
-	local.send(chanNumber+2, b);
+	var chans = getPatch(chanName);
+	for (var i = 0; i< chans.length; i++) {
+		var address = chans[i];
+		local.send(chanName+0, r);
+		local.send(chanName+1, g);
+		local.send(chanName+2, b);
+	}
 }
 
-function write16bitRGB(chanNumber, value) {
+function write16bitRGB(chanName, value) {
 	var r = value[0] * ((256 * 256)-1);
-	local.send(chanNumber+0, Math.floor(r/256));
-	local.send(chanNumber+1, Math.floor(r%256));
 	var g = value[1] * ((256 * 256)-1);
-	local.send(chanNumber+2, Math.floor(g/256));
-	local.send(chanNumber+3, Math.floor(g%256));
 	var b = value[2] * ((256 * 256)-1);
-	local.send(chanNumber+4, Math.floor(b/256));
-	local.send(chanNumber+5, Math.floor(b%256));
+	var chans = getPatch(chanName);
+	for (var i = 0; i< chans.length; i++) {
+		var address = chans[i];
+		local.send(chanName+0, Math.floor(r/256));
+		local.send(chanName+1, Math.floor(r%256));
+		local.send(chanName+2, Math.floor(g/256));
+		local.send(chanName+3, Math.floor(g%256));
+		local.send(chanName+4, Math.floor(b/256));
+		local.send(chanName+5, Math.floor(b%256));
+	}
 }
 
 
@@ -308,8 +335,6 @@ function fillInputList() {
 	}
 
 
-	//root.states.state.processors.multiplex1.lists.dmx.#2
-
 }
 
 function scriptParameterChanged(param) {
@@ -338,7 +363,7 @@ function getInputListElements(element) {
 
 
 
-function effect(chanNumber, dataType, mode, slotNumber, sequenceValue, num, total) {
+function effect(chanName, dataType, mode, slotName, sequenceValue, num, total) {
 	var target = controlAdressToElement(sequenceValue);
 	if (! target) { return; }
 	var parents = getLayerAndSequence(target);
@@ -351,7 +376,7 @@ function effect(chanNumber, dataType, mode, slotNumber, sequenceValue, num, tota
 	while(time > totalTime) {time -= totalTime;}
 	
 	var val = parents.layer.automation.getValueAtPosition(time);
-	setValueSimple(chanNumber, dataType, mode, slotNumber, val);
+	setValueSimple(chanName, dataType, mode, slotName, val);
 }
 
 function effectCV(targetValue, targetCV, num, total) {
@@ -413,8 +438,114 @@ function getLayerAndSequence(t) {
 
 
 
+var patch = {};
+var patchContainer = local.parameters.addContainer("Patch");
 
+var deletePatchItems = [];
 
+function update(deltaTime) {
+	for (var i = 0; i< deletePatchItems.length; i++) {
+		patchContainer.removeContainer(deletePatchItems[i].name);
+		patch[deletePatchItems[i].niceName] = false;
+	}		
+	deletePatchItems = [];
+}
+
+function getPatch(chanName) {
+	if (!patch[chanName]) {
+		patch[chanName] = [];
+		updatePatchDisplay();
+	}
+	return patch[chanName];
+}
+
+function updatePatchDisplay() {
+	var channelNames = util.getObjectProperties(patch);
+	for (var i = 0; i < channelNames.length; i++) {
+		var name = channelNames[i];
+		var channelContainer = patchContainer.getChild(name);
+		if (channelContainer == undefined) {
+			channelContainer = patchContainer.addContainer(name);
+			channelContainer.addTrigger("Add patch", "Press me to add a new patch value");
+			channelContainer.addTrigger("Delete patch", "Press me to delete a patch value or this channel");
+			channelContainer.addIntParameter("Address 1", "DMX Address", 1, 1, 512);
+		} 
+	}
+}
+
+function moduleParameterChanged(param) {
+	var parent = param.getParent();
+	if (param.name == "addPatch" || param.name == "deletePatch") {
+		var next = 0;
+		var valid = true;
+		while (valid) {
+			next++;
+			valid = parent["address"+next] !== undefined;
+		}
+		if (param.name == "addPatch") {
+			parent.addIntParameter("Address "+(next), "DMX Address (set to 0 means disabled)", 0, 0, 512);
+		} else if (param.name == "deletePatch") {
+			if (next > 2) {
+				parent.removeParameter("address"+(next-1));
+			} else {
+				deletePatchItems.push(parent);
+			}
+		} 
+	} else if (param.name.substring(0,7) == "address") {
+		readPatchFromInput(param.getParent().name, param.getParent().niceName);
+	} else {
+		script.log(param.name);
+	}
+}
+
+function readPatchFromInput(name, niceName){
+	var container = patchContainer.getChild(name);
+	var currentPatch = patch[niceName];
+	var newPatch = [];
+	var current = 0;
+	var valid = true;
+	while (valid && current < 100) {
+		current++;
+		var param = container.getChild("address"+current);
+		valid = container["address"+current] !== undefined;
+		if (valid) {
+			var val = param.get();
+			if (val > 0) {
+				newPatch.push(val);
+			}
+		}
+	}
+	// liberer ici les circuits depatchés
+	var type = slotsData[niceName].dataType;
+
+	for (var i = 0; i< currentPatch.length; i++) {
+		if (newPatch.indexOf(currentPatch[i]) == -1) {
+			if (type == "i8") {
+				local.send(currentPatch[i],0);
+			}
+			else if (type == "i16") {
+				local.send(currentPatch[i],0);
+				local.send(currentPatch[i+1],0);
+			}
+			else if (type == "rgb8") {
+				local.send(currentPatch[i],0);
+				local.send(currentPatch[i+1],0);
+				local.send(currentPatch[i+2],0);
+			}
+			else if (type == "rgb16") {
+				local.send(currentPatch[i],0);
+				local.send(currentPatch[i+1],0);
+				local.send(currentPatch[i+2],0);
+				local.send(currentPatch[i+3],0);
+				local.send(currentPatch[i+4],0);
+				local.send(currentPatch[i+5],0);
+			}
+		}
+	}
+
+	patch[niceName] = newPatch;
+	refreshSlot(name);
+}
 
 
 
@@ -439,5 +570,7 @@ function explode(v) {
 function map(value, low1, high1, low2, high2) {
     return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
 }
+
+
 
 

@@ -36,11 +36,7 @@
 			"callback": "setValue",
 			"parameters": { 
 				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
+					"type": "String"
 				}, 
 
 
@@ -63,11 +59,8 @@
 						"Master" : "Master"
 					}
 				}, 
-				"Slot Number": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"useForMapping": true
+				"Slot": {
+					"type": "String"
 				}, 
 				"Value (dimmer 8)": { 
 					"type":"Float", 
@@ -158,148 +151,6 @@
 
 	
 
-
-		"Dimmer 8bits":
-		{
-			"menu": "",
-			"callback": "setChannel8bit",
-			"parameters": { 
-				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
-				}, 
-				"Mode": {
-					"type": "Enum",
-					"options" : {
-						"LTP" : "LTP",
-						"HTP" : "HTP",
-						"FX" : "FX",
-						"Master" : "Master"
-					}
-				}, 
-				"Slot Number": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"useForMapping": true
-				}, 
-				"Value": {
-					"type": "Float",
-					"default": 0, 
-					"useForMapping": true
-				}
-			}
-		},
-
-	
-		"Dimmer 16bits":
-		{
-			"menu": "",
-			"callback": "setChannel16bit",
-			"parameters": { 
-				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
-				}, 
-				"Mode": {
-					"type": "Enum",
-					"options" : {
-						"LTP" : "LTP",
-						"HTP" : "HTP",
-						"FX" : "FX",
-						"Master" : "Master"
-					}
-				}, 
-				"Slot Number": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"useForMapping": true
-				}, 
-				"Value": {
-					"type": "Float",
-					"default": 0, 
-					"useForMapping": true
-				}
-			}
-		},
-
-	
-		"RGB 8b":
-		{
-			"menu": "",
-			"callback": "setChannelRGB8bit",
-			"parameters": { 
-				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
-				}, 
-				"Mode": {
-					"type": "Enum",
-					"options" : {
-						"LTP" : "LTP",
-						"HTP" : "HTP",
-						"FX" : "FX",
-						"Master" : "Master"
-					}
-				}, 
-				"Slot Number": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"useForMapping": true
-				}, 
-				"Value": {
-					"type": "Color"
-				}
-			}
-		},
-
-	
-		"RGB 16b":
-		{
-			"menu": "",
-			"callback": "setChannelRGB16bit",
-			"parameters": { 
-				"Channel": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"max":512,
-					"useForMapping": true
-				}, 
-				"Mode": {
-					"type": "Enum",
-					"options" : {
-						"LTP" : "LTP",
-						"HTP" : "HTP",
-						"FX" : "FX",
-						"Master" : "Master"
-					}
-				}, 
-				"Slot Number": {
-					"type": "Integer",
-					"default": 1, 
-					"min":1,
-					"useForMapping": true
-				}, 
-				"Value": {
-					"type": "Color",
-					"useForMapping": true
-				}
-			}
-		},
-
-	
 		"Clear slot":
 		{
 			"menu": "",
