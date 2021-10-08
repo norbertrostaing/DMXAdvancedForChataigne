@@ -2,46 +2,59 @@
 
 var clearAllSlotsBtn = script.addTrigger("Clear all slots", "Clear all slots for all channels");
 
-var slotsData = {};
+var slotsValues = {};
+var slotsLevels = {};
 
 function verifSlotData(chanName) {
-	if (!slotsData[chanName]) {
-		script.log(chanName);
-		slotsData[chanName] = {"HTP" : {}, "LTP" : {}, "LTPStack" : [], "FX" : {}, "Master" : 1, "dataType" : ""};
+	if (!slotsValues[chanName]) {
+		// script.log(chanName);
+		slotsValues[chanName] = {"HTP" : {}, "LTP" : {}, "LTPStack" : [], "FX" : {}, "dataType" : ""};
 	}
 }
 
 var dmxSlot = function() {
 	this.value = 0;
-	this.level = 1;
+	this.name = "";
 };
 
 function setValueSimple(chanName, dataType, mode, slotName, value) {
+	if (chanName == "") {return false;}
 	if (dataType == "i8") {setValue(chanName,dataType, mode, slotName, value, false, false, false); }
 	else if (dataType == "i16") {setValue(chanName,dataType, mode, slotName, false, value, false, false); }
 	else if (dataType == "rgb8") {setValue(chanName,dataType, mode, slotName, false, false, valus, false); }
 	else if (dataType == "rgb16") {setValue(chanName,dataType, mode, slotName, false, false, false, value); }
 }
 
-function setSlotLevel(chanName, mode, slotName, value) {
-	if (slotsData[chanName][mode] && slotsData[chanName][mode][slotName]) {
-		slotsData[chanName][mode][slotName].level = value;
-		if (slotsData[chanName].dataType == "i8") {processChannelI8(chanName); }
-		else if (slotsData[chanName].dataType == "i16") {processChannelI16(chanName); }
-		else if (slotsData[chanName].dataType == "rgb8") {processChannelRGB8bit(chanName); }
-		else if (slotsData[chanName].dataType == "rgb16") {processChannelRGB16bit(chanName); }
-	}
+function setSlotLevel(slotName, value) {
+	slotsLevels[slotName] = value;
 }
 
 function refreshSlot(chanName) {
-	if (slotsData[chanName].dataType == "i8") {processChannelI8(chanName);}
-	else if (slotsData[chanName].dataType == "i16") {processChannelI16(chanName);}
-	else if (slotsData[chanName].dataType == "rgb8") {processChannelRGB8(chanName);}
-	else if (slotsData[chanName].dataType == "rgb16") {processChannelRGB16(chanName);}
+	if (chanName == "") {return false;}
+	if (slotsValues[chanName].dataType == "i8") {processChannelI8(chanName);}
+	else if (slotsValues[chanName].dataType == "i16") {processChannelI16(chanName);}
+	else if (slotsValues[chanName].dataType == "rgb8") {processChannelRGB8(chanName);}
+	else if (slotsValues[chanName].dataType == "rgb16") {processChannelRGB16(chanName);}
 
 }
 
+function setLTPValue(chanName, dataType, slotName, valuei8, valuei16, valuergb8, valuergb16) {
+	if (chanName == "") {return false;}
+	setValue(chanName, dataType, "LTP", slotName, valuei8, valuei16, valuergb8, valuergb16);	
+}
+
+function setHTPValue(chanName, dataType, slotName, valuei8, valuei16, valuergb8, valuergb16) {
+	if (chanName == "") {return false;}
+	setValue(chanName, dataType, "HTP", slotName, valuei8, valuei16, valuergb8, valuergb16);	
+}
+
+function setFXValue(chanName, dataType, slotName, valuei8, valuei16, valuergb8, valuergb16) {
+	if (chanName == "") {return false;}
+	setValue(chanName, dataType, "FX", slotName, valuei8, valuei16, valuergb8, valuergb16);	
+}
+
 function setValue(chanName, dataType, mode, slotName, valuei8, valuei16, valuergb8, valuergb16) {
+	if (chanName == "") {return false;}
 	if (dataType == "i8") {setChannel8bit(chanName, mode, slotName, valuei8); }
 	else if (dataType == "i16") {setChannel16bit(chanName, mode, slotName, valuei16); }
 	else if (dataType == "rgb8") {setChannelRGB8bit(chanName, mode, slotName, valuergb8); }
@@ -68,32 +81,37 @@ function setChannelRGB16bit(chanName, mode, slotName, value) {
 	processChannelRGB16(chanName);
 }
 
-function clearSlot(chanName, mode, slotName) {
-	if (slotsData[chanName][mode]!==undefined && slotsData[chanName][mode][slotName]!==undefined) {
-		if (mode == "LTP") {
-			var slot = slotsData[chanName][mode][slotName];
-			var index = slotsData[chanName].LTPStack.indexOf(slot);
-			if (index != -1) {slotsData[chanName].LTPStack.splice(index,1);}
+function clearSlot(slotName) {
+	var channelNames = util.getObjectProperties(slotsValues);
+	for (var i = 0; i < channelNames.length; i++) {
+		var chanName = channelNames[i];
+		var slot = slotsValues[chanName].LTP[slotName];
+		if (slot !== undefined) {
+			var index = slotsValues[chanName].LTPStack.indexOf(slot);
+			if (index != -1) {slotsValues[chanName].LTPStack.splice(index,1);}
+			slotsValues[chanName][mode][slotName] = undefined;
 		}
-		slotsData[chanName][mode][slotName] = undefined;
-		if (slotsData[chanName].dataType == "i8") {processChannelI8(chanName);}
-		else if (slotsData[chanName].dataType == "i16") {processChannelI16(chanName);}
-		else if (slotsData[chanName].dataType == "rgb8") {processChannelRGB8(chanName);}
-		else if (slotsData[chanName].dataType == "rgb16") {processChannelRGB16(chanName);}
+		slotsValues[chanName].HTP[slotName] = undefined;
+		slotsValues[chanName].FX[slotName] = undefined;
+
+		if (slotsValues[chanName].dataType == "i8") {processChannelI8(chanName);}
+		else if (slotsValues[chanName].dataType == "i16") {processChannelI16(chanName);}
+		else if (slotsValues[chanName].dataType == "rgb8") {processChannelRGB8(chanName);}
+		else if (slotsValues[chanName].dataType == "rgb16") {processChannelRGB16(chanName);}
 	}
 }
 
 
 function clearChannel(chanName, mode) {
 	if (mode == "LTP" || mode == "All") {
-		slotsData[chanName].LTP = {};
-		slotsData[chanName].LTPStack = {};
+		slotsValues[chanName].LTP = {};
+		slotsValues[chanName].LTPStack = {};
 	}
 	if (mode == "HTP" || mode == "All") {
-		slotsData[chanName].HTP = {};
+		slotsValues[chanName].HTP = {};
 	}
 	if (mode == "FX" || mode == "All") {
-		slotsData[chanName].FX = {};
+		slotsValues[chanName].FX = {};
 	}
 }
 
@@ -105,41 +123,39 @@ function clearAllChannel(mode) {
 
 
 function updateSlot(chanName, mode, slotName, value, dataType) {
+	if (chanName == "") {return false;}
 	verifSlotData(chanName);
-	slotsData[chanName].dataType = dataType;
+	slotsValues[chanName].dataType = dataType;
 	if (mode == "HTP") {setHTPChannel(chanName, slotName, value);}
 	else if (mode == "LTP") {setLTPChannel(chanName, slotName, value) ;}
 	else if (mode == "FX") {setFXChannel(chanName, slotName, value) ;}
-	else if (mode == "Master") {setMasterChannel(chanName, value) ;}
 }
 
 function setHTPChannel(chanName, slotName, value) {
-	if (!slotsData[chanName].HTP[slotName]) {slotsData[chanName].HTP[slotName] = new dmxSlot(); }
-	slotsData[chanName].HTP[slotName].value = value;
+	if (!slotsValues[chanName].HTP[slotName]) {slotsValues[chanName].HTP[slotName] = new dmxSlot(); }
+	slotsValues[chanName].HTP[slotName].value = value;
+	slotsValues[chanName].HTP[slotName].name = slotName;
 }
 
 function setLTPChannel(chanName, slotName, value) {
-	if (!slotsData[chanName].LTP[slotName]) {
-		slotsData[chanName].LTP[slotName] = new dmxSlot();
+	if (!slotsValues[chanName].LTP[slotName]) {
+		slotsValues[chanName].LTP[slotName] = new dmxSlot();
 	}
-	var slot = slotsData[chanName].LTP[slotName];
+	var slot = slotsValues[chanName].LTP[slotName];
 	slot.value = value;
-	var index = slotsData[chanName].LTPStack.indexOf(slot);
-	if (index != -1) {slotsData[chanName].LTPStack.splice(index,1);}
-	slotsData[chanName].LTPStack.push(slot);
+	slot.name = slotName;
+	var index = slotsValues[chanName].LTPStack.indexOf(slot);
+	if (index != -1) {slotsValues[chanName].LTPStack.splice(index,1);}
+	slotsValues[chanName].LTPStack.push(slot);
 }
 
 function setFXChannel(chanName, slotName, value) {
-	if (!slotsData[chanName].FX[slotName]) {
-		slotsData[chanName].FX[slotName] = new dmxSlot();
+	if (!slotsValues[chanName].FX[slotName]) {
+		slotsValues[chanName].FX[slotName] = new dmxSlot();
 	}
-	slotsData[chanName].FX[slotName].value = value;
+	slotsValues[chanName].FX[slotName].value = value;
+	slotsValues[chanName].FX[slotName].name = slotName;
 }
-
-function setMasterChannel(chanName, value) {
-	slotsData[chanName].Master = value;
-}
-
 
 function processChannelI8(chanName) {
 	var val = processNumericChannel(chanName);
@@ -161,33 +177,37 @@ function processChannelRGB16(chanName) {
 	write16bitRGB(chanName, val);
 }
 
+function getSlotLevel(name) {
+	var level = slotsLevels[name] !== undefined ? slotsLevels[name] : 1;
+	return level;
+} 
+
 function processNumericChannel(chanName) {
 	var val = 0;
-	var data = slotsData[chanName];
+	var data = slotsValues[chanName];
 	if (data.LTPStack.length > 0 ) {
 		for (var i = 0; i < data.LTPStack.length; i++) {
-			var slot = data.LTPStack[i];
-			val = map(slot.level, 0, 1, val, slot.value);
+			var s = data.LTPStack[i];
+			var level = getSlotLevel(s.name);
+			val = map(level, 0, 1, val, s.value);
 		}
 	}
 	if (data.HTP) {
 		var slotsId = util.getObjectProperties(data.HTP);
 		for (var i = 0; i< slotsId.length; i++) {
 			var s = data.HTP[slotsId[i]];
-			val = Math.max(val, s.value * s.level);
+			var level = getSlotLevel(s.name);
+			val = Math.max(val, s.value * level);
 		}
 	}
 	if (data.FX) {
 		var slotsId = util.getObjectProperties(data.FX);
 		for (var i = 0; i< slotsId.length; i++) {
 			var s = data.FX[slotsId[i]];
-			val += s.value * s.level;
-
+			var level = getSlotLevel(s.name);
+			val += s.value * level;
 		}
 	}
-
-	val = val * data.Master; 
-
 	val = Math.max(val, 0);
 	val = Math.min(val, 1);
 	return val;
@@ -196,12 +216,14 @@ function processNumericChannel(chanName) {
 
 function processRGBChannel(chanName) {
 	var val = [0,0,0,0];
-	var data = slotsData[chanName];
+	var data = slotsValues[chanName];
 	if (data.LTPStack) {
 		for (var i = 0; i < data.LTPStack.length; i++) {
-			var slot = data.LTPStack[i];
+			var slotName = data.LTPStack[i].name;
+			var s = data.LTP[slotName];
+			var level = getSlotLevel(s.name);
 			for (var j = 0; j < 4; j++) {
-				val[j] = map(slot.level,0,1,val[j], slot.value[j]);
+				val[j] = map(level,0,1,val[j], s.value[j]);
 			}
 		}
 	}
@@ -210,8 +232,9 @@ function processRGBChannel(chanName) {
 		var slotsId = util.getObjectProperties(data.HTP);
 		for (var i = 0; i< slotsId.length; i++) {
 			var s = data.HTP[slotsId[i]];
+			var level = getSlotLevel(s.name);
 			for (var j = 0; j < 4; j++) {
-				val = Math.max(val[j], s.value[j] * s.level);
+				val = Math.max(val[j], s.value[j] * level);
 			}
 		}
 	}
@@ -220,17 +243,13 @@ function processRGBChannel(chanName) {
 		var slotsId = util.getObjectProperties(data.FX);
 		for (var i = 0; i< slotsId.length; i++) {
 			var s = data.FX[slotsId[i]];
+			var level = getSlotLevel(s.name);
 			for (var j = 0; j < 4; j++) {
-				val[j] += s.value[j] * s.level;
+				val[j] += s.value[j] * level;
 			}
 		}
 	}
 
-	for (var j = 0; j < 4; j++) {
-		val[j] = val[j] * data.Master; 
-		val[j] = Math.max(val[j], 0);
-		val[j] = Math.min(val[j], 1);
-	}
 	return val;
 }
 
@@ -278,7 +297,6 @@ function write16bitRGB(chanName, value) {
 	var chans = getPatch(chanName);
 	for (var i = 0; i< chans.length; i++) {
 		var address = chans[i];
-		script.log(address);
 		local.send(address+0, Math.floor(r/256));
 		local.send(address+1, Math.floor(r%256));
 		local.send(address+2, Math.floor(g/256));
@@ -476,7 +494,7 @@ function readAllPatchFromInput() {
 		if (elmt._type == "Container") {
 			readPatchFromInput(elmt.name, elmt.niceName);
 		}
-		script.log(patchContainer[children[i]]._type);
+		// script.log(patchContainer[children[i]]._type);
 	}
 }
 
@@ -484,7 +502,6 @@ function checkAddRemoveButtons() {
 	var children = util.getObjectProperties(patchContainer);
 	for (var i = 0; i < children.length; i++) {
 		var elmt = patchContainer[children[i]];
-		script.log(elmt);
 		if (elmt._type == "Container" && !elmt.addPatch) {
 			addPatchButtons(elmt);
 		}
@@ -548,7 +565,7 @@ function readPatchFromInput(name, niceName){
 			}
 		}
 	}
-	var type = slotsData[niceName].dataType;
+	var type = slotsValues[niceName].dataType;
 
 	for (var i = 0; i< currentPatch.length; i++) {
 		if (newPatch.indexOf(currentPatch[i]) == -1) {

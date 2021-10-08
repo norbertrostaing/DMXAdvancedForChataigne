@@ -30,15 +30,14 @@
 	
 	"commands": {
 		
-		"Set Value":
+		"Set LTP Value":
 		{
 			"menu": "",
-			"callback": "setValue",
+			"callback": "setLTPValue",
 			"parameters": { 
 				"Channel": {
 					"type": "String"
 				}, 
-
 
 				"Data type": { 
 					"type":"Enum", 
@@ -50,18 +49,10 @@
 					} 
 				},
 
-				"Mode": {
-					"type": "Enum",
-					"options" : {
-						"LTP" : "LTP",
-						"HTP" : "HTP",
-						"FX" : "FX",
-						"Master" : "Master"
-					}
-				}, 
 				"Slot": {
 					"type": "String"
 				}, 
+
 				"Value (dimmer 8)": { 
 					"type":"Float", 
 					"default": 0, 
@@ -109,6 +100,146 @@
 			}
 		},
 
+		"Set HTP Value":
+		{
+			"menu": "",
+			"callback": "setHTPValue",
+			"parameters": { 
+				"Channel": {
+					"type": "String"
+				}, 
+
+				"Data type": { 
+					"type":"Enum", 
+					"options": { 
+						"Dimmer 8bits":"i8", 
+						"Dimmer 16bits":"i16",
+						"RGB color 8bits":"rgb8", 
+						"RGB color 16bits":"rgb16" 
+					} 
+				},
+
+				"Slot": {
+					"type": "String"
+				}, 
+				
+				"Value (dimmer 8)": { 
+					"type":"Float", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"i8", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (dimmer 16)": { 
+					"type":"Float", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"i16", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (RGB 8)": { 
+					"type":"Color", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"rgb8", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (RGB 16)": { 
+					"type":"Color", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"rgb16", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+			}
+		},
+
+		"Set FX Value":
+		{
+			"menu": "",
+			"callback": "setFXValue",
+			"parameters": { 
+				"Channel": {
+					"type": "String"
+				}, 
+
+				"Data type": { 
+					"type":"Enum", 
+					"options": { 
+						"Dimmer 8bits":"i8", 
+						"Dimmer 16bits":"i16",
+						"RGB color 8bits":"rgb8", 
+						"RGB color 16bits":"rgb16" 
+					} 
+				},
+
+				"Slot": {
+					"type": "String"
+				}, 
+				
+				"Value (dimmer 8)": { 
+					"type":"Float", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"i8", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (dimmer 16)": { 
+					"type":"Float", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"i16", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (RGB 8)": { 
+					"type":"Point3D", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"rgb8", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+				"Value (RGB 16)": { 
+					"type":"Point3D", 
+					"default": 0, 
+					"useForMapping": true, 
+					"dependency": { 
+						"source":"dataType", 
+						"value":"rgb16", 
+						"check":"equals", 
+						"action":"show" 
+					} 
+				}, 
+			}
+		},
+
 	
 
 
@@ -117,49 +248,23 @@
 			"menu": "",
 			"callback": "setSlotLevel",
 			"parameters": { 
-				"Channel": {
-					"type": "String"
-				}, 
-
-				"Mode": {
-					"type": "Enum",
-					"options" : {
-						"LTP" : "LTP",
-						"HTP" : "HTP",
-						"FX" : "FX",
-						"Master" : "Master"
-					}
-				}, 
-
 				"Slot": {
 					"type": "String"
 				}, 
 				"Value": { 
 					"type":"Float", 
-					"default": 0, 
+					"default": 1, 
 					"useForMapping": true
 				}
 			}
 		},
 
 	
-
 		"Clear slot":
 		{
 			"menu": "",
 			"callback": "clearSlot",
 			"parameters": { 
-				"Channel": {
-					"type": "String"
-				}, 
-				"Mode": {
-					"type": "Enum",
-					"options" : {
-						"LTP" : "LTP",
-						"HTP" : "HTP",
-						"FX" : "FX",
-					}
-				}, 
 				"Slot": {
 					"type": "String"
 				}
