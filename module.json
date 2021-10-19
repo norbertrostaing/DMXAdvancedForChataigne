@@ -53,7 +53,7 @@
 					"type": "String"
 				}, 
 
-				"Value (dimmer 8)": { 
+				"Value dimmer 8bits": { 
 					"type":"Float", 
 					"default": 0, 
 					"useForMapping": true, 
@@ -64,7 +64,7 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (dimmer 16)": { 
+				"Value dimmer 16bits": { 
 					"type":"Float", 
 					"default": 0, 
 					"useForMapping": true, 
@@ -75,9 +75,9 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (RGB 8)": { 
+				"Value RGB 8bits": { 
 					"type":"Color", 
-					"default": 0, 
+					"default": [0,0,0,0], 
 					"useForMapping": true, 
 					"dependency": { 
 						"source":"dataType", 
@@ -86,9 +86,9 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (RGB 16)": { 
+				"Value RGB 16bits": { 
 					"type":"Color", 
-					"default": 0, 
+					"default": [0,0,0,0], 
 					"useForMapping": true, 
 					"dependency": { 
 						"source":"dataType", 
@@ -123,7 +123,7 @@
 					"type": "String"
 				}, 
 				
-				"Value (dimmer 8)": { 
+				"Value dimmer 8bits": { 
 					"type":"Float", 
 					"default": 0, 
 					"useForMapping": true, 
@@ -134,7 +134,7 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (dimmer 16)": { 
+				"Value dimmer 16bits": { 
 					"type":"Float", 
 					"default": 0, 
 					"useForMapping": true, 
@@ -145,9 +145,9 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (RGB 8)": { 
+				"Value RGB 8bits": { 
 					"type":"Color", 
-					"default": 0, 
+					"default": [0,0,0,0], 
 					"useForMapping": true, 
 					"dependency": { 
 						"source":"dataType", 
@@ -156,9 +156,9 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (RGB 16)": { 
+				"Value RGB 16bits": { 
 					"type":"Color", 
-					"default": 0, 
+					"default": [0,0,0,0], 
 					"useForMapping": true, 
 					"dependency": { 
 						"source":"dataType", 
@@ -193,7 +193,7 @@
 					"type": "String"
 				}, 
 				
-				"Value (dimmer 8)": { 
+				"Value dimmer 8bits": { 
 					"type":"Float", 
 					"default": 0, 
 					"useForMapping": true, 
@@ -204,7 +204,7 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (dimmer 16)": { 
+				"Value dimmer 16bits": { 
 					"type":"Float", 
 					"default": 0, 
 					"useForMapping": true, 
@@ -215,7 +215,7 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (RGB 8)": { 
+				"Value RGB 8bits": { 
 					"type":"Point3D", 
 					"default": 0, 
 					"useForMapping": true, 
@@ -226,7 +226,7 @@
 						"action":"show" 
 					} 
 				}, 
-				"Value (RGB 16)": { 
+				"Value RGB 16bits": { 
 					"type":"Point3D", 
 					"default": 0, 
 					"useForMapping": true, 
@@ -296,6 +296,65 @@
 			"menu": "",
 			"callback": "effect",
 			"parameters": { 
+				"Channels": {
+					"description" : "Channel names separated by coma",
+					"type": "String"
+				}, 
+
+				"Data type": { 
+					"type":"Enum", 
+					"options": { 
+						"Dimmer 8bits":"i8", 
+						"Dimmer 16bits":"i16",
+						"RGB color 8bits":"rgb8", 
+						"RGB color 16bits":"rgb16" 
+					} 
+				},
+
+				"Mode": {
+					"type": "Enum",
+					"options" : {
+						"LTP" : "LTP",
+						"HTP" : "HTP",
+						"FX" : "FX"
+					}
+				},
+
+				"Slot": {
+					"type": "String"
+				},
+
+				"Sequence Value": {
+					"type": "Target",
+				}, 
+
+				"Blocks of": {
+					"description" : "Effect applies to blocks of X elements (elements of the same block have the same value)",
+					"type": "Integer",
+					"min":1,
+					"default":1
+				},
+				"Wings": {
+					"description" : "Effect with blocks applies X times on the selection in one direction then another then another then another then another .... ",
+					"type": "Integer",
+					"min":1,
+					"default":1
+				}, 
+				"Groups": {
+					"description" : "Effect with blocks and wings applies X times on the selection",
+					"type": "Integer",
+					"min":1,
+					"default":1
+				}, 
+			}
+		},
+
+	
+		"Effect one channel":
+		{
+			"menu": "",
+			"callback": "effectOne",
+			"parameters": { 
 				"Channel": {
 					"type": "String"
 				}, 
@@ -316,8 +375,7 @@
 					"options" : {
 						"LTP" : "LTP",
 						"HTP" : "HTP",
-						"FX" : "FX",
-						"Master" : "Master"
+						"FX" : "FX"
 					}
 				}, 
 				"Slot": {

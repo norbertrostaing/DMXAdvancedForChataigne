@@ -355,8 +355,6 @@ function scriptParameterChanged(param) {
 }
 
 
-
-
 function getInputListElements(element) {
 	var children = [];
 	var props = util.getObjectProperties(element);
@@ -369,10 +367,42 @@ function getInputListElements(element) {
 }
 
 
+function effect(chanNames, dataType, mode, slotName, sequenceValue, blocs, wings, groups) {
+	var target = controlAdressToElement(sequenceValue);
+	if (! target) { return; }
+	var parents = getLayerAndSequence(target);
+	if (!parents) {return; }
+
+	var totalTime = parents.sequence.totalTime.get();
+	var currentTime = parents.sequence.currentTime.get();
+	
+	chanNames = chanNames.split(",");
+	var total = chanNames.length;
+	var totalGroup = Math.ceil(total / groups);
+	var totalWing = Math.ceil(totalGroup / wings);
+
+	for (var i = 0; i< chanNames.length; i++) {
+		var chanName = chanNames[i].trim();
+		var index = i - ( i % blocs);
+		index = index % totalGroup;
+		var wingNumber = Math.floor((index/totalGroup) * wings);
+		index = index % totalWing;
+		if (wingNumber % 2 == 1) {index = totalWing - 1 - index;}
+		script.log(index+" / "+ totalWing+ " - wing "+wingNumber);
+	
+		var time = currentTime + (2*totalTime) - ((index / totalWing) * totalTime);
+		while(time > totalTime) {time -= totalTime;}
+		
+		var val = parents.layer.automation.getValueAtPosition(time);
+		setValueSimple(chanName, dataType, mode, slotName, val);
+
+	}
+
+	// arrondir ?
+}
 
 
-
-function effect(chanName, dataType, mode, slotName, sequenceValue, num, total) {
+function effectOne(chanName, dataType, mode, slotName, sequenceValue, num, total) {
 	var target = controlAdressToElement(sequenceValue);
 	if (! target) { return; }
 	var parents = getLayerAndSequence(target);
