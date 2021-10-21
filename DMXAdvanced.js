@@ -21,7 +21,7 @@ function setValueSimple(chanName, dataType, mode, slotName, value) {
 	if (chanName == "") {return false;}
 	if (dataType == "i8") {setValue(chanName,dataType, mode, slotName, value, false, false, false); }
 	else if (dataType == "i16") {setValue(chanName,dataType, mode, slotName, false, value, false, false); }
-	else if (dataType == "rgb8") {setValue(chanName,dataType, mode, slotName, false, false, valus, false); }
+	else if (dataType == "rgb8") {setValue(chanName,dataType, mode, slotName, false, false, value, false); }
 	else if (dataType == "rgb16") {setValue(chanName,dataType, mode, slotName, false, false, false, value); }
 }
 
@@ -370,11 +370,11 @@ function getInputListElements(element) {
 function effect(chanNames, dataType, mode, slotName, sequenceValue, blocs, wings, groups) {
 	var target = controlAdressToElement(sequenceValue);
 	if (! target) { return; }
-	var parents = getLayerAndSequence(target);
-	if (!parents) {return; }
+	var parent = getLayerAndSequence(target);
+	if (!parent) {return; }
 
-	var totalTime = parents.sequence.totalTime.get();
-	var currentTime = parents.sequence.currentTime.get();
+	var totalTime = parent.sequence.totalTime.get();
+	var currentTime = parent.sequence.currentTime.get();
 	
 	chanNames = chanNames.split(",");
 	var total = chanNames.length;
@@ -388,12 +388,19 @@ function effect(chanNames, dataType, mode, slotName, sequenceValue, blocs, wings
 		var wingNumber = Math.floor((index/totalGroup) * wings);
 		index = index % totalWing;
 		if (wingNumber % 2 == 1) {index = totalWing - 1 - index;}
-		script.log(index+" / "+ totalWing+ " - wing "+wingNumber);
 	
 		var time = currentTime + (2*totalTime) - ((index / totalWing) * totalTime);
 		while(time > totalTime) {time -= totalTime;}
 		
-		var val = parents.layer.automation.getValueAtPosition(time);
+		var val;
+		if (parent.layer.automation) {
+			val = parent.layer.automation.getValueAtPosition(time);
+		} else if (parent.layer.colors) {
+			val = parent.layer.colors.getColorAtPosition(time);
+		} else {
+			// explode(parent.layer);
+		}
+
 		setValueSimple(chanName, dataType, mode, slotName, val);
 
 	}
@@ -454,17 +461,16 @@ function getLayerAndSequence(t) {
 	var layer = false;
 	var sequence = false;
 	var noParent = false;
-
+	// explode(t.getParent());
 	while ((!layer || !sequence) && !noParent) {
 		if (!t.is(root)) {
 			t = t.getParent();
-			if (t.automation != undefined) {layer = t;}
+			if (t.layerColor != undefined) {layer = t;}
 			if (t.currentTime != undefined) {sequence = t;}
 		} else {
 			noParent = true;
 		}
 	}
-
 	if (noParent) {
 		return false;
 	}
